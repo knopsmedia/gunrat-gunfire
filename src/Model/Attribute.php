@@ -2,7 +2,24 @@
 
 namespace Gunratbe\Gunfire\Model;
 
-class Attribute
+final class Attribute
 {
-$END$
+    private string $name;
+    private string $value;
+
+    public function __construct(string $name, string $value)
+    {
+        $this->value = $value;
+        $this->name = $name;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getValue(): string
+    {
+        return $this->value;
+    }
 }

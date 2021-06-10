@@ -1,5 +1,25 @@
 {
+    "name": "gunrat/gunfire",
+    "description": "Reads Gunfire XML input and turns them into CSV output",
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "Gunratbe\\Gunfire\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Gunratbe\\GunfireTest\\": "tests"
+        }
+    },
     "require": {
+        "php": "^8.0",
+        "cocur/slugify": "^4.0",
+        "league/csv": "^9.7",
         "sabre/xml": "^2.2"
+    },
+    "config": {
+        "bin-dir": "bin",
+        "sort-packages": true
     }
 }

@@ -2,7 +2,25 @@
 
 namespace Gunratbe\Gunfire\Serializer;
 
-class AttributeXmlDeserializer
+use Gunratbe\Gunfire\Model\Attribute;
+use Sabre\Xml\Reader;
+use Sabre\Xml\XmlDeserializable;
+
+final class AttributeXmlDeserializer implements XmlDeserializable
 {
-$END$
+    public static function xmlDeserialize(Reader $reader)
+    {
+        $attributes = $reader->parseAttributes();
+        $children = $reader->parseInnerTree([
+            '{}value' => function (Reader $reader) {
+                $attrs = $reader->parseAttributes();
+                $reader->next();
+
+                return $attrs['name'];
+            },
+        ]);
+        $reader->next();
+
+        return new Attribute($attributes['name'], $children[0]['value']);
+    }
 }

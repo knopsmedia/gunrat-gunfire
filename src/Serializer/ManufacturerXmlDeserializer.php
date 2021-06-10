@@ -2,7 +2,17 @@
 
 namespace Gunratbe\Gunfire\Serializer;
 
-class ManufacturerXmlDeserializer
+use Gunratbe\Gunfire\Model\Manufacturer;
+use Sabre\Xml\Reader;
+use Sabre\Xml\XmlDeserializable;
+
+final class ManufacturerXmlDeserializer implements XmlDeserializable
 {
-$END$
+    public static function xmlDeserialize(Reader $reader)
+    {
+        $attributes = $reader->parseAttributes();
+        $reader->next();
+
+        return new Manufacturer((int)$attributes['id'], $attributes['name']);
+    }
 }
