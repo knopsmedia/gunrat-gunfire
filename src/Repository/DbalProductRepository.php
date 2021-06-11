@@ -8,7 +8,7 @@ use Gunratbe\Gunfire\Model\Manufacturer;
 use Gunratbe\Gunfire\Model\Product;
 use Gunratbe\Gunfire\Model\ProductPrice;
 
-final class DbalProductRepository extends AbstractPdoRepository implements ProductRepository
+final class DbalProductRepository extends AbstractDbalRepository implements ProductRepository
 {
     private ProductImageRepository $imageRepository;
     private ProductAttributeRepository $attributeRepository;

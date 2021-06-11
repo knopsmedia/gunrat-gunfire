@@ -6,7 +6,7 @@ use Doctrine\DBAL\Connection;
 use Gunratbe\Gunfire\Model\Product;
 use Gunratbe\Gunfire\Model\ProductAttribute;
 
-final class DbalProductAttributeRepository extends AbstractPdoRepository implements ProductAttributeRepository
+final class DbalProductAttributeRepository extends AbstractDbalRepository implements ProductAttributeRepository
 {
     public function __construct(Connection $connection)
     {

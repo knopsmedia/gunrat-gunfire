@@ -1,5 +1,8 @@
-/bin
-/build
+/bin/*
+!bin/create-shopify-import
+!bin/download-product-info
+!bin/update-product-info
+/build/*
 /data/*.sqlite3
 /data/gunfire-*
-/vendor
+/vendor/*

@@ -36,18 +36,18 @@ $ export GUNFIRE_DB_URI="sqlite:///data/gunfire.sqlite3"
 This command is idempotent. Use it to fetch new product information. Tested with 2GB of RAM.
 
 ```
-$ php -dmemory_limit=2G download-product-info.php
+$ php -dmemory_limit=2G bin/download-product-info
 ```
 
 ### Update Product Information
 
-This command is lighter than `download-product-info.php` and faster.
+This command is lighter than `bin/download-product-info` and faster.
 
 Use it to keep your product information up-to-date by running this command regularly. 
 Tested with 2GB of RAM.
 
 ```
-$ php -dmemory_limit=2G update-product-info.php
+$ php -dmemory_limit=2G bin/update-product-info
 ```
 
 ### Create Shopify Product Import CSV
@@ -55,5 +55,5 @@ $ php -dmemory_limit=2G update-product-info.php
 Create the CSV product import file and import it into Shopify. Tested with 2GB of RAM.
 
 ```
-$ php -dmemory_limit=2G create-shopify-import.php > shopify-product-import.csv
+$ php -dmemory_limit=2G bin/create-shopify-import > shopify-product-import.csv
 ```

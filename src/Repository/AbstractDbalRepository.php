@@ -4,7 +4,7 @@ namespace Gunratbe\Gunfire\Repository;
 
 use Doctrine\DBAL\Connection;
 
-abstract class AbstractPdoRepository
+abstract class AbstractDbalRepository
 {
     private Connection $connection;
 

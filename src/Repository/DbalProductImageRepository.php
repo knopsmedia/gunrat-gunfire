@@ -6,7 +6,7 @@ use Doctrine\DBAL\Connection;
 use Gunratbe\Gunfire\Model\Product;
 use Gunratbe\Gunfire\Model\ProductImage;
 
-final class DbalProductImageRepository extends AbstractPdoRepository implements ProductImageRepository
+final class DbalProductImageRepository extends AbstractDbalRepository implements ProductImageRepository
 {
     public function __construct(Connection $connection)
     {
