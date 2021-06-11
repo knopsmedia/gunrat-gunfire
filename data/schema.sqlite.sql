@@ -1,3 +1,5 @@
+PRAGMA foreign_keys = ON;
+
 DROP TABLE IF EXISTS product_attributes;
 DROP TABLE IF EXISTS product_images;
 DROP TABLE IF EXISTS products;
