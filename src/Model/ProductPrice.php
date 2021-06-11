@@ -7,10 +7,12 @@ final class ProductPrice
     private int $productExternalId;
     private float $priceAmount;
     private string $priceCurrency;
+    private int $stockQuantity = 0;
 
-    public function __construct(int $productExternalId, float $priceAmount, string $priceCurrency)
+    public function __construct(int $productExternalId, int $stockQuantity, float $priceAmount, string $priceCurrency)
     {
         $this->productExternalId = $productExternalId;
+        $this->stockQuantity = $stockQuantity;
         $this->priceAmount = $priceAmount;
         $this->priceCurrency = $priceCurrency;
     }
@@ -28,5 +30,10 @@ final class ProductPrice
     public function getPriceCurrency(): string
     {
         return $this->priceCurrency;
+    }
+
+    public function getStockQuantity(): int
+    {
+        return $this->stockQuantity;
     }
 }

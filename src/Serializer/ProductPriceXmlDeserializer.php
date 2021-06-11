@@ -25,8 +25,30 @@ final class ProductPriceXmlDeserializer implements XmlDeserializable
 
                 return (float)$attributes['gross'];
             },
+            '{}sizes' => function(Reader $reader) {
+                $arr = $reader->parseInnerTree();
+                if (!is_array($arr)) {
+                    return $arr;
+                }
+
+                return $arr[0]['value'];
+            },
+            '{}size' => function(Reader $reader) {
+                $arr = $reader->parseInnerTree();
+                if (!is_array($arr)) {
+                    return $arr;
+                }
+
+                return $arr[0]['value'];
+            },
+            '{}stock' => function(Reader $reader) {
+                $attributes = $reader->parseAttributes();
+                $reader->next();
+
+                return (int)$attributes['quantity'];
+            },
         ]);
 
-        return new ProductPrice((int)$attributes['id'], $prices[1]['value'], self::$currency);
+        return new ProductPrice((int)$attributes['id'], (int)$prices[3]['value'], $prices[1]['value'], self::$currency);
     }
 }

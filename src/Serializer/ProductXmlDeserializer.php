@@ -30,20 +30,18 @@ final class ProductXmlDeserializer implements XmlDeserializable
                 return keyValue($reader, '');
             },
             '{}parameters'  => function (Reader $reader) {
-                $reader->elementMap['{}parameter'] = ProductAttributeXmlDeserializer::class;
-
                 return repeatingElements($reader, '{}parameter');
             },
+            '{}parameter' => ProductAttributeXmlDeserializer::class,
             '{}images'      => function (Reader $reader) {
-                $elements = $reader->parseGetElements([
-                    '{}large' => function (Reader $reader) {
-                        return repeatingElements($reader, '{}image');
-                    },
-                    '{}image' => ProductImageXmlDeserializer::class,
-                ]);
+                $elements = $reader->parseInnerTree();
 
                 return $elements[0]['value'];
             },
+            '{}large' => function (Reader $reader) {
+                return repeatingElements($reader, '{}image');
+            },
+            '{}image' => ProductImageXmlDeserializer::class,
         ]);
 
         foreach ($children as $child) {

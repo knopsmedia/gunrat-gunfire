@@ -14,14 +14,15 @@ CREATE TABLE products (
     manufacturer_external_id INTEGER NOT NULL,
     manufacturer_name TEXT NOT NULL,
     price_amount REAL,
-    price_currency TEXT
+    price_currency TEXT,
+    stock_quantity INTEGER NOT NULL
 );
 
 CREATE TABLE product_images (
     product_external_id INTEGER NOT NULL,
     position INTEGER NOT NULL,
     external_url TEXT NOT NULL,
-    FOREIGN KEY (product_external_id) REFERENCES products (external_id),
+    FOREIGN KEY (product_external_id) REFERENCES products (external_id) ON DELETE CASCADE,
     PRIMARY KEY (product_external_id, position)
 );
 
@@ -29,6 +30,6 @@ CREATE TABLE product_attributes (
     product_external_id INTEGER NOT NULL,
     name TEXT NOT NULL,
     value TEXT NOT NULL,
-    FOREIGN KEY (product_external_id) REFERENCES products (external_id),
+    FOREIGN KEY (product_external_id) REFERENCES products (external_id) ON DELETE CASCADE,
     PRIMARY KEY (product_external_id, name)
 );

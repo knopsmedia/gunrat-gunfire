@@ -6,6 +6,7 @@ final class DownloadProductInformation extends ProductInformationAbstract
 {
     public function download(): void
     {
+        $this->getGunfire()->getPrices();
         $productRepository = $this->getRepositoryFactory()->getProductRepository();
 
         $products = $this->getGunfire()->getProducts();

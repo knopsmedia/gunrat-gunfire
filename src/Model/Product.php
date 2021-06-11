@@ -9,23 +9,21 @@ final class Product
     private string $name = '';
     private string $description = '';
     private string $externalListingUrl = '';
+    private ?Manufacturer $manufacturer = null;
+    private ?Category $category = null;
+    private int $nextImagePosition = 1;
+    private ?float $priceAmount = null;
+    private ?string $priceCurrency = null;
+    private int $stockQuantity = 0;
 
     /** @var string[] */
     private array $tags = [];
 
-    private ?Manufacturer $manufacturer = null;
-    private ?Category $category = null;
-
     /** @var ProductImage[] */
     private array $images = [];
 
-    private int $nextImagePosition = 1;
-
     /** @var ProductAttribute[] */
     private array $attributes = [];
-
-    private ?float $priceAmount = null;
-    private ?string $priceCurrency = null;
 
     public function getExternalId(): int
     {
@@ -220,5 +218,15 @@ final class Product
     public function setNextImagePosition(int $nextImagePosition): void
     {
         $this->nextImagePosition = $nextImagePosition;
+    }
+
+    public function getStockQuantity(): int
+    {
+        return $this->stockQuantity;
+    }
+
+    public function setStockQuantity(int $stockQuantity): void
+    {
+        $this->stockQuantity = $stockQuantity;
     }
 }
