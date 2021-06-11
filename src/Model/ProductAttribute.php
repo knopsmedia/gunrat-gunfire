@@ -2,8 +2,9 @@
 
 namespace Gunratbe\Gunfire\Model;
 
-final class Attribute
+final class ProductAttribute
 {
+    private ?Product $product = null;
     private string $name;
     private string $value;
 
@@ -21,5 +22,15 @@ final class Attribute
     public function getValue(): string
     {
         return $this->value;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): void
+    {
+        $this->product = $product;
     }
 }

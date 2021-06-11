@@ -2,19 +2,27 @@
 
 namespace Gunratbe\Gunfire\Service;
 
+use Gunratbe\Gunfire\Model\Product;
+use Gunratbe\Gunfire\Model\ProductPrice;
+use Gunratbe\Gunfire\Serializer\ProductPriceXmlDeserializer;
 use Gunratbe\Gunfire\Serializer\ProductXmlDeserializer;
 use Sabre\Xml\Reader;
 use function Sabre\Xml\Deserializer\repeatingElements;
 
 final class GunfireService
 {
-    private string $location = __DIR__ . '/../gunfire-products.xml';
+    private string $productsFile = __DIR__ . '/../../data/gunfire-products.xml';
+    private string $pricesFile = __DIR__ .'/../../data/gunfire-prices.xml';
 
+    /**
+     * @return Product[]
+     * @throws \Sabre\Xml\LibXMLException
+     */
     public function getProducts(): array
     {
-        $service = new Reader();
-        $service->elementMap = [
-            '{}offer' => function(Reader $reader) {
+        $reader = new Reader();
+        $reader->elementMap = [
+            '{}offer'    => function (Reader $reader) {
                 $products = $reader->parseGetElements();
 
                 return $products[0]['value'];
@@ -26,8 +34,42 @@ final class GunfireService
             },
         ];
 
-        $service->open($this->location);
+        $reader->open($this->productsFile);
 
-        return $service->parse()['value'];
+        return $reader->parse()['value'];
+    }
+
+    /**
+     * @return ProductPrice[]
+     * @throws \Sabre\Xml\LibXMLException
+     */
+    public function getPrices(): array
+    {
+        $reader = new Reader();
+        $reader->elementMap = [
+            '{}offer'   => function (Reader $reader) {
+                $elements = $reader->parseGetElements([
+                    '{}products' => function(Reader $reader) {
+                        $attributes = $reader->parseAttributes();
+                        ProductPriceXmlDeserializer::setCurrency($attributes['currency']);
+
+                        $elements = $reader->parseGetElements(['{}product' => ProductPriceXmlDeserializer::class]);
+                        $prices = [];
+
+                        foreach ($elements as $price) {
+                            $prices[] = $price['value'];
+                        }
+
+                        return $prices;
+                    },
+                ]);
+
+                return $elements[0]['value'];
+            },
+        ];
+
+        $reader->open($this->pricesFile);
+
+        return $reader->parse()['value'];
     }
 }

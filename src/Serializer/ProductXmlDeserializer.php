@@ -15,7 +15,7 @@ final class ProductXmlDeserializer implements XmlDeserializable
         $product = new Product();
         $attributes = $reader->parseAttributes();
         $product->setExternalId((int)$attributes['id']);
-        $product->setSku($attributes['code_producer']);
+        $product->setExternalSku($attributes['code_producer']);
 
         $children = $reader->parseGetElements([
             '{}producer'    => ManufacturerXmlDeserializer::class,
@@ -30,7 +30,7 @@ final class ProductXmlDeserializer implements XmlDeserializable
                 return keyValue($reader, '');
             },
             '{}parameters'  => function (Reader $reader) {
-                $reader->elementMap['{}parameter'] = AttributeXmlDeserializer::class;
+                $reader->elementMap['{}parameter'] = ProductAttributeXmlDeserializer::class;
 
                 return repeatingElements($reader, '{}parameter');
             },
@@ -39,7 +39,7 @@ final class ProductXmlDeserializer implements XmlDeserializable
                     '{}large' => function (Reader $reader) {
                         return repeatingElements($reader, '{}image');
                     },
-                    '{}image' => ImageXmlDeserializer::class,
+                    '{}image' => ProductImageXmlDeserializer::class,
                 ]);
 
                 return $elements[0]['value'];
@@ -55,7 +55,7 @@ final class ProductXmlDeserializer implements XmlDeserializable
                     $product->setCategory($child['value']);
                     break;
                 case '{}card':
-                    $product->setExternalUrl($child['value']);
+                    $product->setExternalListingUrl($child['value']);
                     break;
                 case '{}description':
                     $product->setName($child['value']['name']);

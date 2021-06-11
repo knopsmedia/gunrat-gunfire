@@ -1,2 +1,5 @@
 /bin
+/build
+/data/*.sqlite3
+/data/gunfire-*
 /vendor

@@ -5,10 +5,10 @@ namespace Gunratbe\Gunfire\Model;
 final class Product
 {
     private int $externalId = 0;
-    private string $sku = '';
+    private string $externalSku = '';
     private string $name = '';
     private string $description = '';
-    private string $externalUrl = '';
+    private string $externalListingUrl = '';
 
     /** @var string[] */
     private array $tags = [];
@@ -16,11 +16,16 @@ final class Product
     private ?Manufacturer $manufacturer = null;
     private ?Category $category = null;
 
-    /** @var Image[] */
+    /** @var ProductImage[] */
     private array $images = [];
 
-    /** @var Attribute[] */
+    private int $nextImagePosition = 1;
+
+    /** @var ProductAttribute[] */
     private array $attributes = [];
+
+    private ?float $priceAmount = null;
+    private ?string $priceCurrency = null;
 
     public function getExternalId(): int
     {
@@ -32,14 +37,14 @@ final class Product
         $this->externalId = $externalId;
     }
 
-    public function getSku(): string
+    public function getExternalSku(): string
     {
-        return $this->sku;
+        return $this->externalSku;
     }
 
-    public function setSku(string $sku): void
+    public function setExternalSku(string $externalSku): void
     {
-        $this->sku = $sku;
+        $this->externalSku = $externalSku;
     }
 
     public function getName(): string
@@ -62,14 +67,14 @@ final class Product
         $this->description = $description;
     }
 
-    public function getExternalUrl(): string
+    public function getExternalListingUrl(): string
     {
-        return $this->externalUrl;
+        return $this->externalListingUrl;
     }
 
-    public function setExternalUrl(string $externalUrl): void
+    public function setExternalListingUrl(string $externalListingUrl): void
     {
-        $this->externalUrl = $externalUrl;
+        $this->externalListingUrl = $externalListingUrl;
     }
 
     public function getManufacturer(): ?Manufacturer
@@ -93,6 +98,26 @@ final class Product
         $this->setTags(explode('/', $category->getName()));
     }
 
+    public function getPriceAmount(): ?float
+    {
+        return $this->priceAmount;
+    }
+
+    public function setPriceAmount(?float $priceAmount): void
+    {
+        $this->priceAmount = $priceAmount;
+    }
+
+    public function getPriceCurrency(): ?string
+    {
+        return $this->priceCurrency;
+    }
+
+    public function setPriceCurrency(?string $priceCurrency): void
+    {
+        $this->priceCurrency = $priceCurrency;
+    }
+
     public function getTags(): array
     {
         return $this->tags;
@@ -103,12 +128,17 @@ final class Product
         $this->tags = $tags;
     }
 
-    public function getWeightInKg(): float
+    public function getWeight(): float
     {
         $attribute = $this->findAttributeByName('Weight [g]');
         $weight = $attribute ? (float)$attribute->getValue() : .0;
 
-        return $weight / 1000;
+        return $weight;
+    }
+
+    public function getWeightInKg(): float
+    {
+        return $this->getWeight() / 1000;
     }
 
     public function getAttributes(): array
@@ -116,7 +146,7 @@ final class Product
         return $this->attributes;
     }
 
-    public function findAttributeByName(string $name): ?Attribute
+    public function findAttributeByName(string $name): ?ProductAttribute
     {
         foreach ($this->getAttributes() as $attribute) {
             if ($attribute->getName() === $name) {
@@ -136,8 +166,9 @@ final class Product
         return $this;
     }
 
-    public function addAttribute(Attribute $attribute): Attribute
+    public function addAttribute(ProductAttribute $attribute): ProductAttribute
     {
+        $attribute->setProduct($this);
         $this->attributes[] = $attribute;
 
         return $attribute;
@@ -157,10 +188,37 @@ final class Product
         return $this;
     }
 
-    public function addImage(Image $image): Image
+    public function addImage(ProductImage $image, ?int $position = null): ProductImage
     {
+        if ($position !== null && $position >= $this->nextImagePosition) {
+            $this->nextImagePosition = $position + 1;
+        }
+
+        $image->setProduct($this);
+        $image->setPosition($position ?? $this->incrementNextImagePosition());
         $this->images[] = $image;
 
         return $image;
+    }
+
+    public function getNextImagePosition(): int
+    {
+        return $this->nextImagePosition;
+    }
+
+    public function incrementNextImagePosition(): int
+    {
+        $position = $this->nextImagePosition++;
+
+        return $position;
+    }
+
+    /**
+     * @param int $nextImagePosition
+     * @internal
+     */
+    public function setNextImagePosition(int $nextImagePosition): void
+    {
+        $this->nextImagePosition = $nextImagePosition;
     }
 }

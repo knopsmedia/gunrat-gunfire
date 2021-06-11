@@ -3,10 +3,14 @@
 namespace Gunratbe\Gunfire\Service;
 
 use Cocur\Slugify\Slugify;
-use Gunratbe\Gunfire\Model\Image;
+use Gunratbe\Gunfire\Model\ProductImage;
 use Gunratbe\Gunfire\Model\Product;
+use Gunratbe\Gunfire\Repository\ProductRepository;
 use League\Csv\Writer;
 
+/**
+ * @see https://help.shopify.com/en/manual/products/import-export/using-csv#overwriting-csv-file
+ */
 final class ShopifyProductImportCsvCreator
 {
     private array $headers = [
@@ -17,12 +21,16 @@ final class ShopifyProductImportCsvCreator
         'Image Src', 'Image Position', 'Image Alt Text', 'Gift Card', 'Variant Weight Unit',
     ];
 
+    private ProductRepository $productRepository;
+
+    public function __construct(ProductRepository $productRepository)
+    {
+        $this->productRepository = $productRepository;
+    }
+
     public function create(): string
     {
-        $gunfire = new GunfireService();
-        $records = [];
-
-        foreach ($gunfire->getProducts() as $product) {
+        foreach ($this->productRepository->getAll() as $product) {
             if (0 === count($product->getImages())) {
                 $records[] = $this->createProductRecord($product);
             } else {
@@ -43,7 +51,7 @@ final class ShopifyProductImportCsvCreator
         return $writer->toString();
     }
 
-    protected function createImageRecord(Product $product, Image $image, int $position): array
+    protected function createImageRecord(Product $product, ProductImage $image, int $position): array
     {
         $slugify = new Slugify();
 
@@ -72,18 +80,17 @@ final class ShopifyProductImportCsvCreator
             '', // Variant Requires Shipping
             '', // Variant Taxable
             '', // Variant Barcode
-            $image->getUrl(), // Image Src
+            $image->getExternalUrl(), // Image Src
             $position, // Image Position
             '', // Image Alt Text
             '', // Gift Card
         ];
     }
 
-    protected function createProductRecord(Product $product, ?Image $image = null, int $position = 0): array
+    protected function createProductRecord(Product $product, ?ProductImage $image = null, int $position = 0): array
     {
         $slugify = new Slugify();
 
-        // https://help.shopify.com/en/manual/products/import-export/using-csv#overwriting-csv-file
         return [
             $slugify->slugify($product->getName()), // Handle
             $product->getName(), // Title
@@ -98,7 +105,7 @@ final class ShopifyProductImportCsvCreator
             '', // Option 2 Value
             '', // Option 3 Name
             '', // Option 3 Value
-            $product->getSku(), // Variant SKU
+            $product->getExternalSku(), // Variant SKU
             $product->getWeightInKg(), // Variant Grams
             '', // Variant Inventory Tracker
             '', // Variant Inventory Qty
@@ -109,7 +116,7 @@ final class ShopifyProductImportCsvCreator
             'TRUE', // Variant Requires Shipping
             'TRUE', // Variant Taxable
             '', // Variant Barcode
-            $image ? $image->getUrl() : '', // Image Src
+            $image ? $image->getExternalUrl() : '', // Image Src
             $image ? $position : '', // Image Position
             $product->getName(), // Image Alt Text
             'FALSE', // Gift Card
