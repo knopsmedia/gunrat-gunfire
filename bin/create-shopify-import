@@ -1,9 +1,32 @@
 #!/usr/bin/env php
 <?php
 
-require __DIR__ . '/vendor/autoload.php';
+ini_set('memory_limit', '512M');
 
-$factory = new \Gunratbe\Gunfire\Factory\DbalRepositoryFactory(getenv('GUNFIRE_DB_URI'));
+require __DIR__ . '/../vendor/autoload.php';
+
+// -d, --diagnostic run in diagnostic mode
+$args = getopt('hd', ['help', 'diagnostic']);
+
+if (isset($args['h']) || isset($args['help'])) {
+    echo 'create-shopify-import - Create a Shopify bulk product import CSV.', PHP_EOL;
+    echo '', PHP_EOL;
+    echo '  -d, --diagnostic  Runs the program and outputs diagnostic information.', PHP_EOL;
+    echo '', PHP_EOL;
+    exit;
+}
+
+$stopwatch = new \Symfony\Component\Stopwatch\Stopwatch();
+$stopwatch->start('create');
+
+$factory = new \Gunratbe\Gunfire\Factory\DbalRepositoryFactory(getenv('GUNRAT_DB_URI'));
 $service = new \Gunratbe\Gunfire\Service\ShopifyProductImportCsvCreator($factory->getProductRepository());
 
-echo $service->create();
+if (isset($args['d'])) {
+    $service->create();
+    $event = $stopwatch->stop('create');
+
+    echo 'Executed in ', ($event->getDuration() / 1000), 'sec. with ', ($event->getMemory() / 1024 / 1024), 'mb of memory.', PHP_EOL;
+} else {
+    echo $service->create();
+}

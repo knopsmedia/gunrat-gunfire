@@ -1,15 +1,18 @@
 # Shopify Product Import Generator for Gunfire
 
-This program provides several commands to 
-download product information from [gunfire.com](https://gunfire.com) 
-and generate a Shopify product import CSV of it.
+This program provides commands to download product information 
+from [gunfire.com B2B portal](https://b2b.gunfire.com) to a local SQLite3 database.
+
+From this database we generate a Shopify product import CSV.
 
 ## System Requirements
 
 - PHP 8+
 - SQLite
 
-### Install Composer
+## Installation
+
+### Install Dependencies
 
 _If you do not have composer installed, please follow the instructions at:
 [https://getcomposer.org/download](https://getcomposer.org/download/)._
@@ -18,36 +21,37 @@ _If you do not have composer installed, please follow the instructions at:
 $ composer i
 ```
 
-### Create Database
+### Create Local Database
 
 Create the database at your desired location 
 and use `./data/schema.sqlite.sql` to create the schema.
 
-### Set Database Environment Variable
-
-And point it to your database.
+### Set Environment Variables
 
 ```
-$ export GUNFIRE_DB_URI="sqlite:///data/gunfire.sqlite3"
+$ export GUNRAT_DB_URI="sqlite:///data/gunfire.sqlite3"
+$ export GUNFIRE_PRODUCTS_URL="https://b2b.gunfire.com/xml/products_en.xml"
+$ export GUNFIRE_PRICES_URL="https://b2b.gunfire.com/xml/B2B002052/light.xml"
 ```
+
+## Commands
 
 ### Download Product Information
 
-This command is idempotent. Use it to fetch new product information. Tested with 2GB of RAM.
+This command is idempotent. Use it to fetch new product information.
 
 ```
-$ php -dmemory_limit=2G bin/download-product-info
+$ ./bin/download-product-info
 ```
 
 ### Update Product Information
 
 This command is lighter than `bin/download-product-info` and faster.
 
-Use it to keep your product information up-to-date by running this command regularly. 
-Tested with 2GB of RAM.
+Use it to keep your product information up-to-date by running this command regularly.
 
 ```
-$ php -dmemory_limit=2G bin/update-product-info
+$ ./bin/update-product-info
 ```
 
 ### Create Shopify Product Import CSV
@@ -55,5 +59,5 @@ $ php -dmemory_limit=2G bin/update-product-info
 Create the CSV product import file and import it into Shopify. Tested with 2GB of RAM.
 
 ```
-$ php -dmemory_limit=2G bin/create-shopify-import > shopify-product-import.csv
+$ ./bin/create-shopify-import > shopify-product-import.csv
 ```

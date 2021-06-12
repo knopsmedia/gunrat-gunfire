@@ -11,8 +11,14 @@ use function Sabre\Xml\Deserializer\repeatingElements;
 
 final class GunfireService
 {
-    private string $productsFile = __DIR__ . '/../../data/gunfire-products.xml';
-    private string $pricesFile = __DIR__ .'/../../data/gunfire-prices.xml';
+    private string $productsFile;
+    private string $pricesFile;
+
+    public function __construct(string $productsFile, string $pricesFile)
+    {
+        $this->productsFile = $productsFile;
+        $this->pricesFile = $pricesFile;
+    }
 
     /**
      * @return Product[]
