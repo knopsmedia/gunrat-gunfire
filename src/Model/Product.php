@@ -93,7 +93,7 @@ final class Product
     public function setCategory(Category $category): void
     {
         $this->category = $category;
-        $this->setTags(explode('/', $category->getName()));
+        $this->setTags($category->getTags());
     }
 
     public function getPriceAmount(): ?float

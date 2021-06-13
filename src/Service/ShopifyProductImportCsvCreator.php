@@ -96,7 +96,7 @@ final class ShopifyProductImportCsvCreator
             $product->getName(), // Title
             '', // str_replace("\r\n", '', $product->getDescription()), // Body (HTML)
             $product->getManufacturer()->getName(), // Vendor
-            $product->getCategory()->getName(), // Type
+            $product->getCategory()->getShortName(), // Type
             implode(',', $product->getTags()), // Tags
             'TRUE', // Published
             'Title', // Option 1 Name
