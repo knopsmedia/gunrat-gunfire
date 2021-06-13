@@ -12,5 +12,5 @@ interface ProductAttributeRepository
     /**
      * @param ProductAttribute[] $attributes
      */
-    public function insertAll(array $attributes): void;
+    public function insertAll(Product $product, array $attributes): void;
 }

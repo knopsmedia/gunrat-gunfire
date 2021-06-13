@@ -62,7 +62,7 @@ final class Product
 
     public function setDescription(string $description): void
     {
-        $this->description = $description;
+        $this->description = trim($description);
     }
 
     public function getExternalListingUrl(): string

@@ -15,7 +15,7 @@ interface ProductRepository
     /**
      * @param Product[] $products
      */
-    public function insertAll(array $products): void;
+    public function replaceAll(array $products): void;
 
     /**
      * @param ProductPrice[] $prices

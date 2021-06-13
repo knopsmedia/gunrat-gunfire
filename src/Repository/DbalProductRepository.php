@@ -84,20 +84,45 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
         $product->setStockQuantity((int)$data['stock_quantity']);
     }
 
-    public function insertAll(array $products): void
+    /**
+     * @param Product[] $products
+     */
+    public function replaceAll(array $products): void
     {
         foreach ($products as $product) {
-            $this->_insert($product);
+            if ($this->_exists($product->getExternalId())) {
+                $this->_update($product);
+            } else {
+                $this->_insert($product);
+            }
+
+            $this->imageRepository->insertAll($product, $product->getImages());
+            $this->attributeRepository->insertAll($product, $product->getAttributes());
         }
     }
 
     private function _insert(Product $product): void
     {
-        if ($this->_exists($product->getExternalId())) {
-            return;
-        }
+        $this->getConnection()->insert(
+            $this->getTableName(),
+            $this->_dehydrate($product),
+            $this->getColumnDefinitions()
+        );
+    }
 
-        $this->getConnection()->insert($this->getTableName(), [
+    private function _update(Product $product)
+    {
+        $this->getConnection()->update(
+            $this->getTableName(),
+            $this->_dehydrate($product),
+            ['external_id' => $product->getExternalId()],
+            $this->getColumnDefinitions()
+        );
+    }
+
+    private function _dehydrate(Product $product): array
+    {
+        return [
             'external_id'              => $product->getExternalId(),
             'external_listing_url'     => $product->getExternalListingUrl(),
             'name'                     => $product->getName(),
@@ -111,10 +136,7 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
             'price_amount'             => $product->getPriceAmount(),
             'price_currency'           => $product->getPriceCurrency(),
             'stock_quantity'           => $product->getStockQuantity(),
-        ], $this->getColumnDefinitions());
-
-        $this->imageRepository->insertAll($product->getImages());
-        $this->attributeRepository->insertAll($product->getAttributes());
+        ];
     }
 
     private function _exists(int $externalId): bool

@@ -12,5 +12,5 @@ interface ProductImageRepository
     /**
      * @param ProductImage[] $images
      */
-    public function insertAll(array $images): void;
+    public function insertAll(Product $product, array $images): void;
 }

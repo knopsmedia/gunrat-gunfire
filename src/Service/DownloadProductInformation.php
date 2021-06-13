@@ -10,7 +10,7 @@ final class DownloadProductInformation extends ProductInformationAbstract
         $productRepository = $this->getRepositoryFactory()->getProductRepository();
 
         $products = $this->getGunfire()->getProducts();
-        $productRepository->insertAll($products);
+        $productRepository->replaceAll($products);
 
         $prices = $this->getGunfire()->getPrices();
         $productRepository->updatePrices($prices);

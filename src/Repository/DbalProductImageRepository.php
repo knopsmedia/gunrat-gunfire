@@ -32,32 +32,19 @@ final class DbalProductImageRepository extends AbstractDbalRepository implements
         }
     }
 
-    public function insertAll(array $images): void
+    public function insertAll(Product $product, array $images): void
     {
+        $this->getConnection()->delete($this->getTableName(), [
+            'product_external_id' => $product->getExternalId(),
+        ]);
+
         foreach ($images as $image) {
             $this->_insert($image);
         }
     }
 
-    private function _exists(ProductImage $image): bool
-    {
-        $record = $this->getConnection()->createQueryBuilder()
-            ->select('external_url')
-            ->from($this->getTableName())
-            ->where('product_external_id = :external_id AND position = :position')
-            ->setParameter('external_id', $image->getProduct()->getExternalId())
-            ->setParameter('position', $image->getPosition())
-            ->fetchOne();
-
-        return $record !== false;
-    }
-
     private function _insert(ProductImage $image): void
     {
-        if ($this->_exists($image)) {
-            return;
-        }
-
         $this->getConnection()->insert($this->getTableName(), [
             'external_url'        => $image->getExternalUrl(),
             'position'            => $image->getPosition(),

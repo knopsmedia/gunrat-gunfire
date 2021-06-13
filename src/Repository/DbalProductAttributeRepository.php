@@ -31,32 +31,19 @@ final class DbalProductAttributeRepository extends AbstractDbalRepository implem
         }
     }
 
-    public function insertAll(array $attributes): void
+    public function insertAll(Product $product, array $attributes): void
     {
+        $this->getConnection()->delete($this->getTableName(), [
+            'product_external_id' => $product->getExternalId(),
+        ]);
+
         foreach ($attributes as $attribute) {
             $this->_insert($attribute);
         }
     }
 
-    private function _exists(ProductAttribute $attribute): bool
-    {
-        $record = $this->getConnection()->createQueryBuilder()
-            ->select('name')
-            ->from($this->getTableName())
-            ->where('product_external_id = :external_id AND name = :name')
-            ->setParameter('external_id', $attribute->getProduct()->getExternalId())
-            ->setParameter('name', $attribute->getName())
-            ->fetchOne();
-
-        return $record !== false;
-    }
-
     private function _insert(ProductAttribute $attribute): void
     {
-        if ($this->_exists($attribute)) {
-            return;
-        }
-
         $this->getConnection()->insert($this->getTableName(), [
             'product_external_id' => $attribute->getProduct()->getExternalId(),
             'name'                => $attribute->getName(),
