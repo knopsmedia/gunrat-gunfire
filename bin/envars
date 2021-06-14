@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+export GUNRAT_DB_URI="sqlite3:///data/gunrat.sqlite3"
+export GUNFIRE_PRODUCTS_URL="https://b2b.gunfire.com/xml/products_en.xml"
+export GUNFIRE_PRICES_URL="https://b2b.gunfire.com/xml/B2B002052/light.xml"

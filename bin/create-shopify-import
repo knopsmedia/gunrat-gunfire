@@ -5,28 +5,41 @@ ini_set('memory_limit', '512M');
 
 require __DIR__ . '/../vendor/autoload.php';
 
-// -d, --diagnostic run in diagnostic mode
-$args = getopt('hd', ['help', 'diagnostic']);
+$args = getopt('df:hs:', ['diagnostic', 'file:', 'help', 'since:']);
 
 if (isset($args['h']) || isset($args['help'])) {
     echo 'create-shopify-import - Create a Shopify bulk product import CSV.', PHP_EOL;
     echo '', PHP_EOL;
-    echo '  -d, --diagnostic  Runs the program and outputs diagnostic information.', PHP_EOL;
+    echo '  -d, --diagnostic      Runs the program and outputs diagnostic information.', PHP_EOL;
+    echo '  -f, --file [filename] The filename to output.', PHP_EOL;
+    echo '  -h, --help            Show this information.', PHP_EOL;
+    echo '  -s, --since [date]    Exports all updated products since {date}.', PHP_EOL;
     echo '', PHP_EOL;
     exit;
 }
 
-$stopwatch = new \Symfony\Component\Stopwatch\Stopwatch();
-$stopwatch->start('create');
-
 $factory = new \Gunratbe\Gunfire\Factory\DbalRepositoryFactory(getenv('GUNRAT_DB_URI'));
 $service = new \Gunratbe\Gunfire\Service\ShopifyProductImportCsvCreator($factory->getProductRepository());
 
+if (isset($args['s']) || isset($args['since'])) {
+    $date = $args['s'] ?? $args['since'];
+    $service->setUpdatedProductsSince(\Gunratbe\Gunfire\Factory\DateTimeFactory::createFromFormat($date));
+}
+
+if (isset($args['f']) || isset($args['file'])) {
+    $filename = $args['f'] ?? $args['file'];
+    $service->setOutputFilename($filename);
+}
+
 if (isset($args['d'])) {
+    $stopwatch = new \Symfony\Component\Stopwatch\Stopwatch();
+    $stopwatch->start('create');
     $service->create();
     $event = $stopwatch->stop('create');
 
-    echo 'Executed in ', ($event->getDuration() / 1000), 'sec. with ', ($event->getMemory() / 1024 / 1024), 'mb of memory.', PHP_EOL;
+    echo 'Executed in ', ($event->getDuration() / 1000), 'sec. with ', ($event->getMemory() / (1024 ** 2)), 'mb of memory.', PHP_EOL;
 } else {
-    echo $service->create();
+    $service->create();
 }
+
+file_put_contents('.shopify-import-run', date('Y-m-d H:i:s'));

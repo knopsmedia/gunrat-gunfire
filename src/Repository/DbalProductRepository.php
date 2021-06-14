@@ -3,6 +3,7 @@
 namespace Gunratbe\Gunfire\Repository;
 
 use Doctrine\DBAL\Connection;
+use Gunratbe\Gunfire\Factory\DateTimeFactory;
 use Gunratbe\Gunfire\Model\Category;
 use Gunratbe\Gunfire\Model\Manufacturer;
 use Gunratbe\Gunfire\Model\Product;
@@ -31,6 +32,8 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
             'price_amount'             => 'float',
             'price_currency'           => 'string',
             'stock_quantity'           => 'integer',
+            'created_at'               => 'datetime',
+            'updated_at'               => 'datetime',
         ]);
 
         $this->imageRepository = $imageRepository;
@@ -44,6 +47,22 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
             ->from($this->getTableName())
             ->fetchAllAssociative();
 
+        return $this->_hydrateAll($records);
+    }
+
+    public function findUpdatedProductsSince(\DateTimeInterface $since): array
+    {
+        $records = $this->getConnection()->createQueryBuilder()
+            ->select('*')
+            ->from($this->getTableName())
+            ->where('updated_at > :since')->setParameter('since', $since, 'datetime')
+            ->fetchAllAssociative();
+
+        return $this->_hydrateAll($records);
+    }
+
+    private function _hydrateAll(array $records): array
+    {
         $products = [];
         $categories = [];
         $manufacturers = [];
@@ -82,6 +101,11 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
         $product->setPriceAmount((float)$data['price_amount']);
         $product->setPriceCurrency($data['price_currency']);
         $product->setStockQuantity((int)$data['stock_quantity']);
+        $product->setCreatedAt(DateTimeFactory::createFromFormat($data['created_at']));
+
+        if ($data['updated_at']) {
+            $product->setUpdatedAt(DateTimeFactory::createFromFormat($data['updated_at']));
+        }
     }
 
     /**
@@ -101,17 +125,22 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
         }
     }
 
-    private function _insert(Product $product): void
+    private function _exists(int $externalId): bool
     {
-        $this->getConnection()->insert(
-            $this->getTableName(),
-            $this->_dehydrate($product),
-            $this->getColumnDefinitions()
-        );
+        $record = $this->getConnection()->createQueryBuilder()
+            ->select('external_id')
+            ->from($this->getTableName())
+            ->where('external_id = :external_id')
+            ->setParameter('external_id', $externalId)
+            ->fetchOne();
+
+        return $record !== false;
     }
 
     private function _update(Product $product)
     {
+        $product->setUpdatedAt(DateTimeFactory::now());
+
         $this->getConnection()->update(
             $this->getTableName(),
             $this->_dehydrate($product),
@@ -136,19 +165,20 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
             'price_amount'             => $product->getPriceAmount(),
             'price_currency'           => $product->getPriceCurrency(),
             'stock_quantity'           => $product->getStockQuantity(),
+            'created_at'               => $product->getCreatedAt(),
+            'updated_at'               => $product->getUpdatedAt(),
         ];
     }
 
-    private function _exists(int $externalId): bool
+    private function _insert(Product $product): void
     {
-        $record = $this->getConnection()->createQueryBuilder()
-            ->select('external_id')
-            ->from($this->getTableName())
-            ->where('external_id = :external_id')
-            ->setParameter('external_id', $externalId)
-            ->fetchOne();
+        $product->setCreatedAt(DateTimeFactory::now());
 
-        return $record !== false;
+        $this->getConnection()->insert(
+            $this->getTableName(),
+            $this->_dehydrate($product),
+            $this->getColumnDefinitions()
+        );
     }
 
     public function updatePrices(array $prices): void
@@ -161,15 +191,17 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
     private function _updatePrice(ProductPrice $price): void
     {
         $record = [
-            'stock_quantity'   => $price->getStockQuantity(),
+            'stock_quantity' => $price->getStockQuantity(),
             'price_amount'   => $price->getPriceAmount(),
             'price_currency' => $price->getPriceCurrency(),
+            'updated_at'     => DateTimeFactory::now(),
         ];
 
         $this->getConnection()->update(
             $this->getTableName(),
             $record,
-            ['external_id' => $price->getProductExternalId()]
+            ['external_id' => $price->getProductExternalId()],
+            $this->getColumnDefinitions()
         );
     }
 }

@@ -1,8 +1,13 @@
 /bin/*
+!bin/create-database
 !bin/create-shopify-import
 !bin/download-product-info
+!bin/envars
 !bin/update-product-info
 /build/*
+!build/.gitignore
 /data/*.sqlite3
 /data/gunfire-*
 /vendor/*
+.shopify-import-run
+shopify-import-*

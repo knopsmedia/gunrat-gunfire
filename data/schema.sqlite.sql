@@ -17,7 +17,9 @@ CREATE TABLE products (
     manufacturer_name TEXT NOT NULL,
     price_amount REAL,
     price_currency TEXT,
-    stock_quantity INTEGER NOT NULL
+    stock_quantity INTEGER NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT
 );
 
 CREATE TABLE product_images (

@@ -2,6 +2,8 @@
 
 namespace Gunratbe\Gunfire\Model;
 
+use DateTimeInterface;
+
 final class Product
 {
     private int $externalId = 0;
@@ -24,6 +26,9 @@ final class Product
 
     /** @var ProductAttribute[] */
     private array $attributes = [];
+
+    private DateTimeInterface $createdAt;
+    private ?DateTimeInterface $updatedAt = null;
 
     public function getExternalId(): int
     {
@@ -228,5 +233,25 @@ final class Product
     public function setStockQuantity(int $stockQuantity): void
     {
         $this->stockQuantity = $stockQuantity;
+    }
+
+    public function getCreatedAt(): DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(DateTimeInterface $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    public function getUpdatedAt(): ?DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?DateTimeInterface $updatedAt = null): void
+    {
+        $this->updatedAt = $updatedAt;
     }
 }

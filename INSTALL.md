@@ -7,26 +7,25 @@ From this database we generate a Shopify product import CSV.
 
 ## System Requirements
 
-- PHP 8+
-- SQLite
+- PHP v8.0+
+  - with SQLite v2.0+
+- Composer v2.0+
+
+Install composer from [https://getcomposer.org/download](https://getcomposer.org/download/)
 
 ## Installation
 
 ### Install Dependencies
 
-_If you do not have composer installed, please follow the instructions at:
-[https://getcomposer.org/download](https://getcomposer.org/download/)._
-
 ```
 $ composer i
+OR
+$ php composer.phar i
 ```
 
-### Create Local Database
-
-Create the database at your desired location 
-and use `./data/schema.sqlite.sql` to create the schema.
-
 ### Set Environment Variables
+
+Open `bin/envars` and change the environment variables.
 
 ```
 $ export GUNRAT_DB_URI="sqlite:///data/gunfire.sqlite3"
@@ -34,7 +33,20 @@ $ export GUNFIRE_PRODUCTS_URL="https://b2b.gunfire.com/xml/products_en.xml"
 $ export GUNFIRE_PRICES_URL="https://b2b.gunfire.com/xml/B2B002052/light.xml"
 ```
 
+### Create Local Database
+
+```
+$ ./bin/create-database
+```
+
 ## Commands
+
+Before executing any of the below commands make sure to first add the 
+environment variables to your shell. If you don't the command will throw an error.
+
+```
+$ source bin/envars
+```
 
 ### Download Product Information
 
@@ -48,7 +60,7 @@ $ ./bin/download-product-info
 
 This command is lighter than `bin/download-product-info` and faster.
 
-Use it to keep your product information up-to-date by running this command regularly.
+Use it to keep your price and stock information up-to-date by running this command regularly.
 
 ```
 $ ./bin/update-product-info
@@ -56,8 +68,17 @@ $ ./bin/update-product-info
 
 ### Create Shopify Product Import CSV
 
-Create the CSV product import file and import it into Shopify. Tested with 2GB of RAM.
+Create the CSV product import file(s) and import them into Shopify.
+This command creates multiple files under 15MB each.
 
 ```
-$ ./bin/create-shopify-import > shopify-product-import.csv
+$ ./bin/create-shopify-import
+```
+
+You can find the files under the build directory.
+
+For more information on the uses of this command run:
+
+```
+$ ./bin/create-shopify-import -h
 ```

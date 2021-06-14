@@ -3,6 +3,7 @@
 namespace Gunratbe\Gunfire\Service;
 
 use Cocur\Slugify\Slugify;
+use DateTimeInterface;
 use Gunratbe\Gunfire\Model\ProductImage;
 use Gunratbe\Gunfire\Model\Product;
 use Gunratbe\Gunfire\Repository\ProductRepository;
@@ -14,7 +15,7 @@ use League\Csv\Writer;
 final class ShopifyProductImportCsvCreator
 {
     private array $headers = [
-        'Handle', 'Title', 'Body (HTML)', 'Vendor', 'Type', 'Tags', 'Published', 'Option1 Name', 'Option1 Value',
+        'Handle', 'Title', 'Description', 'Vendor', 'Type', 'Tags', 'Published', 'Option1 Name', 'Option1 Value',
         'Option2 Name', 'Option2 Value', 'Option3 Name', 'Option3 value', 'Variant SKU', 'Variant Grams',
         'Variant Inventory Tracker', 'Variant Inventory Qty', 'Variant Inventory Policy', 'Variant Fulfillment Service',
         'Variant Price', 'Variant Compare At Price', 'Variant Requires Shipping', 'Variant Taxable', 'Variant Barcode',
@@ -22,33 +23,72 @@ final class ShopifyProductImportCsvCreator
     ];
 
     private ProductRepository $productRepository;
+    private ?DateTimeInterface $updatedProductsSince = null;
+    private string $outputFilename = 'build/shopify-import.csv';
 
     public function __construct(ProductRepository $productRepository)
     {
         $this->productRepository = $productRepository;
     }
 
-    public function create(): string
+    public function setUpdatedProductsSince(DateTimeInterface $updatedProductsSince): void
     {
-        foreach ($this->productRepository->getAll() as $product) {
+        $this->updatedProductsSince = $updatedProductsSince;
+    }
+
+    public function setOutputFilename(string $outputFilename): void
+    {
+        $this->outputFilename = $outputFilename;
+    }
+
+    public function create(): void
+    {
+        if (null === $this->updatedProductsSince) {
+            $products = $this->productRepository->getAll();
+        } else {
+            $products = $this->productRepository->findUpdatedProductsSince($this->updatedProductsSince);
+        }
+
+        $records = [];
+        $counter = 0;
+        $batchIndex = 1;
+        foreach ($products as $product) {
             if (0 === count($product->getImages())) {
                 $records[] = $this->createProductRecord($product);
+                $counter++;
             } else {
                 foreach ($product->getImages() as $i => $image) {
                     if (0 === $i) {
                         $records[] = $this->createProductRecord($product, $image, $i + 1);
+                        $counter++;
                     } else {
                         $records[] = $this->createImageRecord($product, $image, $i + 1);
                     }
                 }
             }
+
+            if ($counter >= 5000) {
+                $this->write($records, $batchIndex++);
+                $records = [];
+                $counter = 0;
+            }
         }
 
+        if ($records) {
+            $this->write($records, $batchIndex);
+        }
+    }
+
+    protected function write(array $records, int $batchIndex = 1)
+    {
         $writer = Writer::createFromString('');
         $writer->insertOne($this->headers);
         $writer->insertAll($records);
 
-        return $writer->toString();
+        $parts = pathinfo($this->outputFilename);
+        $filename = sprintf('%s/%s-%d.%s', $parts['dirname'], $parts['filename'], $batchIndex, $parts['extension']);
+
+        file_put_contents($filename, $writer->toString());
     }
 
     protected function createImageRecord(Product $product, ProductImage $image, int $position): array
@@ -94,7 +134,7 @@ final class ShopifyProductImportCsvCreator
         return [
             $slugify->slugify($product->getName()), // Handle
             $product->getName(), // Title
-            '', // str_replace("\r\n", '', $product->getDescription()), // Body (HTML)
+            strip_tags(str_replace("\r\n", '', $product->getDescription())), // Description
             $product->getManufacturer()->getName(), // Vendor
             $product->getCategory()->getShortName(), // Type
             implode(',', $product->getTags()), // Tags
@@ -108,10 +148,10 @@ final class ShopifyProductImportCsvCreator
             $product->getExternalSku(), // Variant SKU
             $product->getWeightInKg(), // Variant Grams
             '', // Variant Inventory Tracker
-            '', // Variant Inventory Qty
+            $product->getStockQuantity(), // Variant Inventory Qty
             'deny', // Variant Inventory Policy (deny, continue)
             'manual', // Variant Fulfillment Service
-            0, // Variant Price
+            $product->getPriceAmount(), // Variant Price
             '', // Variant Compare At Price
             'TRUE', // Variant Requires Shipping
             'TRUE', // Variant Taxable

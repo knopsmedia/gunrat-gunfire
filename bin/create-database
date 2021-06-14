@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$connection = \Doctrine\DBAL\DriverManager::getConnection(['url' => getenv('GUNRAT_DB_URI')]);
+$queries = explode(';', file_get_contents(__DIR__ . '/../data/schema.sqlite.sql'));
+
+foreach ($queries as $query) {
+    if (trim($query) !== '') {
+        $connection->executeQuery($query);
+    }
+}
