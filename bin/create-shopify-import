@@ -19,7 +19,7 @@ if (isset($args['h']) || isset($args['help'])) {
 }
 
 $factory = new \Gunratbe\Gunfire\Factory\DbalRepositoryFactory(getenv('GUNRAT_DB_URI'));
-$service = new \Gunratbe\Gunfire\Service\ShopifyProductImportCsvCreator($factory->getProductRepository());
+$service = new \Gunratbe\Gunfire\Shopify\BulkProductImportCsvCreator($factory->getProductRepository());
 
 if (isset($args['s']) || isset($args['since'])) {
     $date = $args['s'] ?? $args['since'];

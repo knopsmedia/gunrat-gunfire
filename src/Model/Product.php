@@ -3,11 +3,16 @@
 namespace Gunratbe\Gunfire\Model;
 
 use DateTimeInterface;
+use Gunratbe\Gunfire\Traits\CreateSlugTrait;
 
 final class Product
 {
+    use CreateSlugTrait;
+
     private int $externalId = 0;
+    private int $shopifyExternalId = 0;
     private string $externalSku = '';
+    private string $handle = '';
     private string $name = '';
     private string $description = '';
     private string $externalListingUrl = '';
@@ -40,6 +45,16 @@ final class Product
         $this->externalId = $externalId;
     }
 
+    public function getShopifyExternalId(): int
+    {
+        return $this->shopifyExternalId;
+    }
+
+    public function setShopifyExternalId(int $shopifyExternalId): void
+    {
+        $this->shopifyExternalId = $shopifyExternalId;
+    }
+
     public function getExternalSku(): string
     {
         return $this->externalSku;
@@ -48,6 +63,20 @@ final class Product
     public function setExternalSku(string $externalSku): void
     {
         $this->externalSku = $externalSku;
+    }
+
+    public function getHandle(): string
+    {
+        if ('' === $this->handle) {
+            $this->handle = $this->createSlug($this->getName());
+        }
+
+        return $this->handle;
+    }
+
+    public function setHandle(string $handle): void
+    {
+        $this->handle = $handle;
     }
 
     public function getName(): string

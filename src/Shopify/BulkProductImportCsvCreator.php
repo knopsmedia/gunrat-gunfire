@@ -1,18 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace Gunratbe\Gunfire\Service;
+namespace Gunratbe\Gunfire\Shopify;
 
-use Cocur\Slugify\Slugify;
 use DateTimeInterface;
-use Gunratbe\Gunfire\Model\ProductImage;
 use Gunratbe\Gunfire\Model\Product;
+use Gunratbe\Gunfire\Model\ProductImage;
 use Gunratbe\Gunfire\Repository\ProductRepository;
 use League\Csv\Writer;
 
 /**
  * @see https://help.shopify.com/en/manual/products/import-export/using-csv#overwriting-csv-file
  */
-final class ShopifyProductImportCsvCreator
+final class BulkProductImportCsvCreator
 {
     private array $headers = [
         'Handle', 'Title', 'Description', 'Vendor', 'Type', 'Tags', 'Published', 'Option1 Name', 'Option1 Value',
@@ -93,10 +92,8 @@ final class ShopifyProductImportCsvCreator
 
     protected function createImageRecord(Product $product, ProductImage $image, int $position): array
     {
-        $slugify = new Slugify();
-
         return [
-            $slugify->slugify($product->getName()), // Handle
+            $product->getHandle(), // Handle
             '', // Title
             '', // Body (HTML)
             '', // Vendor
@@ -129,14 +126,12 @@ final class ShopifyProductImportCsvCreator
 
     protected function createProductRecord(Product $product, ?ProductImage $image = null, int $position = 0): array
     {
-        $slugify = new Slugify();
-
         return [
-            $slugify->slugify($product->getName()), // Handle
+            $product->getHandle(), // Handle
             $product->getName(), // Title
             strip_tags(str_replace("\r\n", '', $product->getDescription())), // Description
             $product->getManufacturer()->getName(), // Vendor
-            $product->getCategory()->getShortName(), // Type
+            $product->getCategory()->getName(), // Type
             implode(',', $product->getTags()), // Tags
             'TRUE', // Published
             'Title', // Option 1 Name
