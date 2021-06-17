@@ -3,7 +3,16 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$opts = getopt('c:', ['cursor:']);
+$opts = getopt('c:h', ['cursor:', 'help']);
+
+if (isset($opts['h']) || isset($opts['help'])) {
+    echo 'push-shopify-product-updates - Push new product information to Shopify', PHP_EOL;
+    echo '', PHP_EOL;
+    echo '  -c, --cursor [name] Runs the update starting from after this product.', PHP_EOL;
+    echo '  -h, --help          Shows this information.', PHP_EOL;
+    echo '', PHP_EOL;
+    exit;
+}
 
 $factory = new \Gunratbe\Gunfire\Factory\DbalRepositoryFactory(getenv('GUNRAT_DB_URI'));
 $shopifyApi = new \Gunratbe\Gunfire\Shopify\ApiClient(
