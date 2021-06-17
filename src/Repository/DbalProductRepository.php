@@ -40,12 +40,58 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
         $this->attributeRepository = $attributeRepository;
     }
 
+    public function count(): int
+    {
+        return (int)$this->getConnection()->createQueryBuilder()
+            ->select('count(*)')
+            ->from($this->getTableName())
+            ->fetchOne();
+    }
+
     public function getAll(): array
     {
         $records = $this->getConnection()->createQueryBuilder()
             ->select('*')
             ->from($this->getTableName())
+            ->orderBy('name')
             ->fetchAllAssociative();
+
+        return $this->_hydrateAll($records);
+    }
+
+    public function getPage(int $offset, int $count): array
+    {
+        $records = $this->getConnection()->createQueryBuilder()
+            ->select('*')
+            ->from($this->getTableName())
+            ->where('name != :empty')->setParameter('empty', '')
+            ->orderBy('name')
+            ->setFirstResult($offset)
+            ->setMaxResults($count)
+            ->fetchAllAssociative();
+
+        return $this->_hydrateAll($records);
+    }
+
+    public function findBy(array $criteria, int $count, int $offset = 0, ?array $orderBy = null): array
+    {
+        $qb = $this->getConnection()->createQueryBuilder()
+            ->select('*')
+            ->from($this->getTableName())
+            ->where('name != :empty')->setParameter('empty', '')
+            ->setFirstResult($offset)
+            ->setMaxResults($count);
+
+        foreach ($criteria as $field => $value) {
+            switch ($field) {
+                case 'after_name':
+                    // cursor-based pagination
+                    $qb->andWhere('name > :after_name')->orderBy('name')->setParameter('after_name', $value);
+                    break;
+            }
+        }
+
+        $records = $qb->fetchAllAssociative();
 
         return $this->_hydrateAll($records);
     }
@@ -55,7 +101,8 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
         $records = $this->getConnection()->createQueryBuilder()
             ->select('*')
             ->from($this->getTableName())
-            ->where('updated_at > :since')->setParameter('since', $since, 'datetime')
+            ->where('name != :empty')->setParameter('empty', '')
+            ->andWhere('updated_at > :since')->setParameter('since', $since, 'datetime')
             ->fetchAllAssociative();
 
         return $this->_hydrateAll($records);
@@ -66,6 +113,7 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
         $products = [];
         $categories = [];
         $manufacturers = [];
+
         foreach ($records as $record) {
             if (!isset($categories[$record['category_external_id']])) {
                 $categories[$record['category_external_id']]
@@ -151,7 +199,7 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
 
     private function _dehydrate(Product $product): array
     {
-        return [
+        $data = [
             'external_id'              => $product->getExternalId(),
             'external_listing_url'     => $product->getExternalListingUrl(),
             'name'                     => $product->getName(),
@@ -165,9 +213,13 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
             'price_amount'             => $product->getPriceAmount(),
             'price_currency'           => $product->getPriceCurrency(),
             'stock_quantity'           => $product->getStockQuantity(),
-            'created_at'               => $product->getCreatedAt(),
-            'updated_at'               => $product->getUpdatedAt(),
         ];
+
+        // only add these if we dehydrate from database
+        if ($product->getCreatedAt()) $data['created_at'] = $product->getCreatedAt();
+        if ($product->getUpdatedAt()) $data['updated_at'] = $product->getUpdatedAt();
+
+        return $data;
     }
 
     private function _insert(Product $product): void

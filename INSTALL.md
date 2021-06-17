@@ -28,9 +28,13 @@ $ php composer.phar i
 Open `bin/envars` and change the environment variables.
 
 ```
-$ export GUNRAT_DB_URI="sqlite:///data/gunfire.sqlite3"
-$ export GUNFIRE_PRODUCTS_URL="https://b2b.gunfire.com/xml/products_en.xml"
-$ export GUNFIRE_PRICES_URL="https://b2b.gunfire.com/xml/B2B002052/light.xml"
+#!/usr/bin/env bash
+export GUNRAT_DB_URI="sqlite3:///data/gunrat.sqlite3"
+export GUNFIRE_PRODUCTS_URL="{YOUR PRODUCTS.XML LOCATION}"
+export GUNFIRE_PRICES_URL="{YOUR PRICES.XML LOCATION}"
+export SHOPIFY_SHOP_URL="{YOUR SHOP URL}"
+export SHOPIFY_API_VERSION="2021-04"
+export SHOPIFY_API_ACCESS_TOKEN="{YOUR API ACCESS TOKEN}"
 ```
 
 ### Create Local Database

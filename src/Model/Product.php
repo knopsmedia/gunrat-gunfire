@@ -32,7 +32,7 @@ final class Product
     /** @var ProductAttribute[] */
     private array $attributes = [];
 
-    private DateTimeInterface $createdAt;
+    private ?DateTimeInterface $createdAt = null;
     private ?DateTimeInterface $updatedAt = null;
 
     public function getExternalId(): int
@@ -160,7 +160,7 @@ final class Product
         $this->tags = $tags;
     }
 
-    public function getWeight(): float
+    public function getWeightInGrams(): float
     {
         $attribute = $this->findAttributeByName('Weight [g]');
         $weight = $attribute ? (float)$attribute->getValue() : .0;
@@ -170,7 +170,7 @@ final class Product
 
     public function getWeightInKg(): float
     {
-        return $this->getWeight() / 1000;
+        return $this->getWeightInGrams() / 1000;
     }
 
     public function getAttributes(): array
@@ -264,7 +264,7 @@ final class Product
         $this->stockQuantity = $stockQuantity;
     }
 
-    public function getCreatedAt(): DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }

@@ -8,10 +8,21 @@ use Gunratbe\Gunfire\Model\ProductPrice;
 
 interface ProductRepository
 {
+    public function count(): int;
+
     /**
      * @return Product[]
      */
     public function getAll(): array;
+
+    /**
+     * @param int $offset
+     * @param int $count
+     * @return Product[]
+     */
+    public function getPage(int $offset, int $count): array;
+
+    public function findBy(array $criteria, int $count, int $offset = 0, ?array $orderBy = null): array;
 
     /**
      * @param DateTimeInterface $since

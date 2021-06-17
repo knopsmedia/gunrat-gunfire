@@ -4,6 +4,7 @@
 !bin/download-product-info
 !bin/envars
 !bin/update-product-info
+!bin/push-shopify-product-updates
 /build/*
 !build/.gitignore
 /data/*.sqlite3

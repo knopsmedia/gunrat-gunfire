@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$opts = getopt('c:', ['cursor:']);
+
+$factory = new \Gunratbe\Gunfire\Factory\DbalRepositoryFactory(getenv('GUNRAT_DB_URI'));
+$shopifyApi = new \Gunratbe\Gunfire\Shopify\ApiClient(
+    getenv('SHOPIFY_SHOP_URL'), getenv('SHOPIFY_API_VERSION'), getenv('SHOPIFY_API_ACCESS_TOKEN')
+);
+
+$importer = new \Gunratbe\Gunfire\Shopify\RestfulBulkProductImporter($factory->getProductRepository(), $shopifyApi);
+$importer->bulkImport($opts['c'] ?? $opts['cursor'] ?? null);
