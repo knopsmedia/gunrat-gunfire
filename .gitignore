@@ -10,5 +10,5 @@
 /data/*.sqlite3
 /data/gunfire-*
 /vendor/*
-.shopify-import-run
+.lastupdate
 shopify-import-*

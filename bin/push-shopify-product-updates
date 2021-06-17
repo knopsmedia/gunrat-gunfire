@@ -3,13 +3,14 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$opts = getopt('c:h', ['cursor:', 'help']);
+$opts = getopt('c:hs:', ['cursor:', 'help', 'since']);
 
 if (isset($opts['h']) || isset($opts['help'])) {
-    echo 'push-shopify-product-updates - Push new product information to Shopify', PHP_EOL;
+    echo 'push-shopify-product-updates - Push new product information to Shopify.', PHP_EOL;
     echo '', PHP_EOL;
-    echo '  -c, --cursor [name] Runs the update starting from after this product.', PHP_EOL;
+    echo '  -c, --cursor [name] Runs the update starting from the product after [name].', PHP_EOL;
     echo '  -h, --help          Shows this information.', PHP_EOL;
+    echo '  -s, --since [date]  Pushes only products that have been updated since [date].', PHP_EOL;
     echo '', PHP_EOL;
     exit;
 }
@@ -20,4 +21,12 @@ $shopifyApi = new \Gunratbe\Gunfire\Shopify\ApiClient(
 );
 
 $importer = new \Gunratbe\Gunfire\Shopify\RestfulBulkProductImporter($factory->getProductRepository(), $shopifyApi);
+
+if (isset($opts['s']) || isset($opts['since'])) {
+    $since = $opts['s'] ?? $opts['since'];
+    $since = \Gunratbe\Gunfire\Factory\DateTimeFactory::createFromString($since);
+
+    $importer->setUpdatedProductsSince($since);
+}
+
 $importer->bulkImport($opts['c'] ?? $opts['cursor'] ?? null);

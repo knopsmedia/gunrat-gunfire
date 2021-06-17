@@ -30,6 +30,8 @@ Open `bin/envars` and change the environment variables.
 ```
 #!/usr/bin/env bash
 export GUNRAT_DB_URI="sqlite3:///data/gunrat.sqlite3"
+# for mysql use
+# export GUNRAT_DB_URI="mysql:///user:pass@localhost:3600/gunrat"
 export GUNFIRE_PRODUCTS_URL="{YOUR PRODUCTS.XML LOCATION}"
 export GUNFIRE_PRICES_URL="{YOUR PRICES.XML LOCATION}"
 export SHOPIFY_SHOP_URL="{YOUR SHOP URL}"
@@ -39,8 +41,10 @@ export SHOPIFY_API_ACCESS_TOKEN="{YOUR API ACCESS TOKEN}"
 
 ### Create Local Database
 
+Create the local database optionally specifying the DB vendor (specify mysql if not using sqlite).
+
 ```
-$ ./bin/create-database
+$ ./bin/create-database [-v sqlite|mysql]
 ```
 
 ## Commands
@@ -79,12 +83,18 @@ This command creates multiple files under 15MB each.
 $ ./bin/create-shopify-import
 ```
 
-You can find the files under the build directory.
+You can find the files under the `build/` directory.
 
 For more information on the uses of this command run:
 
 ```
 $ ./bin/create-shopify-import -h
+```
+
+To send only newly updated information:
+
+```
+$ ./bin/create-shopify-import -s "$(cat .lastupdate)"
 ```
 
 ### Push Shopify Product Updates Directly
@@ -93,4 +103,16 @@ Send all product updates to the Shopify API.
 
 ```
 $ ./bin/push-shopify-product-updates
+```
+
+For more information on the uses of this command run:
+
+```
+$ ./bin/push-shopify-product-updates -h
+```
+
+To send only newly updated information:
+
+```
+$ ./bin/push-shopify-product-updates -s "$(cat .lastupdate)"
 ```

@@ -12,6 +12,7 @@ final class RestfulBulkProductImporter implements BulkProductImporter
     private ProductApi $productApi;
     private ProductVariantApi $variantApi;
     private InventoryLevelApi $inventoryLevelApi;
+    private ?\DateTimeInterface $updatedProductsSince = null;
 
     public function __construct(ProductRepository $productRepository, ApiClient $shopifyApi)
     {
@@ -21,18 +22,29 @@ final class RestfulBulkProductImporter implements BulkProductImporter
         $this->inventoryLevelApi = $shopifyApi->inventoryLevels();
     }
 
-    public function bulkImport(?string $cursor = null)
+    public function setUpdatedProductsSince(?\DateTimeInterface $updatedProductsSince): void
+    {
+        $this->updatedProductsSince = $updatedProductsSince;
+    }
+
+    public function bulkImport(?string $cursor = null): void
     {
         $offset = 0;
         $batchSize = 100;
         $totalProducts = $this->productRepository->count();
 
+        $criteria = [];
+
+        if ($cursor !== null) {
+            $criteria['after_name'] = $cursor;
+        }
+
+        if ($this->updatedProductsSince !== null) {
+            $criteria['updated_since'] = $this->updatedProductsSince->format('Y-m-d H:i:s');
+        }
+
         while (true) {
-            if (null === $cursor) {
-                $products = $this->productRepository->getPage($offset, $batchSize);
-            } else {
-                $products = $this->productRepository->findBy(['after_name' => $cursor], $batchSize, $offset);
-            }
+            $products = $this->productRepository->findBy($criteria, $batchSize, $offset);
 
             if (empty($products)) {
                 break; // reached the end!

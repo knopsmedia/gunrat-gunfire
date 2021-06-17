@@ -21,4 +21,15 @@ final class DateTimeFactory
     {
         return \DateTimeImmutable::createFromFormat($format, $datetime, self::createTimezone());
     }
+
+    public static function createFromString(string $datetime): DateTimeInterface
+    {
+        $timestamp = strtotime($datetime);
+
+        if (false === $timestamp) {
+            throw new \Exception('Invalid datetime specified');
+        }
+
+        return new \DateTimeImmutable('@' . $timestamp, self::createTimezone());
+    }
 }

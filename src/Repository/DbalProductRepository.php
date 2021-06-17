@@ -79,6 +79,7 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
             ->select('*')
             ->from($this->getTableName())
             ->where('name != :empty')->setParameter('empty', '')
+            ->orderBy('name')
             ->setFirstResult($offset)
             ->setMaxResults($count);
 
@@ -88,6 +89,25 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
                     // cursor-based pagination
                     $qb->andWhere('name > :after_name')->orderBy('name')->setParameter('after_name', $value);
                     break;
+                case 'updated_since':
+                    $qb->andWhere('updated_at > :updated_since')->setParameter('updated_since', $value);
+                    break;
+            }
+        }
+
+        $first = true;
+
+        foreach ($orderBy as $field => $mode) {
+            if (is_int($field)) {
+                $field = $mode;
+                $mode = 'ASC';
+            }
+
+            if ($first) {
+                $qb->orderBy($field, $mode);
+                $first = false;
+            } else {
+                $qb->addOrderBy($field, $mode);
             }
         }
 

@@ -16,4 +16,6 @@ $service = new \Gunratbe\Gunfire\Service\DownloadProductInformation(
 $service->download();
 $event = $stopwatch->stop('download');
 
+file_put_contents('.lastupdate', date('Y-m-d H:i:s'));
+
 echo 'Executed in ', ($event->getDuration() / 1000), 'sec. with ', ($event->getMemory() / 1024 / 1024), 'mb of memory.', PHP_EOL;

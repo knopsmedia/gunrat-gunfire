@@ -22,8 +22,10 @@ $factory = new \Gunratbe\Gunfire\Factory\DbalRepositoryFactory(getenv('GUNRAT_DB
 $service = new \Gunratbe\Gunfire\Shopify\BulkProductImportCsvCreator($factory->getProductRepository());
 
 if (isset($opts['s']) || isset($opts['since'])) {
-    $date = $opts['s'] ?? $opts['since'];
-    $service->setUpdatedProductsSince(\Gunratbe\Gunfire\Factory\DateTimeFactory::createFromFormat($date));
+    $since = $opts['s'] ?? $opts['since'];
+    $since = \Gunratbe\Gunfire\Factory\DateTimeFactory::createFromString($since);
+
+    $service->setUpdatedProductsSince($since);
 }
 
 if (isset($opts['f']) || isset($opts['file'])) {
@@ -41,5 +43,3 @@ if (isset($opts['d'])) {
 } else {
     $service->create();
 }
-
-file_put_contents('.shopify-import-run', date('Y-m-d H:i:s'));
