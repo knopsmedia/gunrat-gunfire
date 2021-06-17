@@ -86,3 +86,11 @@ For more information on the uses of this command run:
 ```
 $ ./bin/create-shopify-import -h
 ```
+
+### Push Shopify Product Updates Directly
+
+Send all product updates to the Shopify API.
+
+```
+$ ./bin/push-shopify-product-updates
+```
