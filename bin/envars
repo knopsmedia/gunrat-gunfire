@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-export GUNRAT_DB_URI="sqlite3:///data/gunrat.sqlite3"
-export GUNFIRE_PRODUCTS_URL=""
-export GUNFIRE_PRICES_URL=""
-export SHOPIFY_SHOP_URL="https://gunrat.myshopify.com"
-export SHOPIFY_API_VERSION="2021-04"
-export SHOPIFY_API_ACCESS_TOKEN=""

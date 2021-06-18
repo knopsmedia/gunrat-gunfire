@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Gunratbe\Gunfire\Shopify;
+namespace Gunratbe\Shopify;
 
 final class ProductVariantApi
 {

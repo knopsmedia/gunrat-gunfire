@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Gunratbe\Gunfire\Shopify;
+namespace Gunratbe\Shopify;
 
 final class ApiClient
 {
@@ -54,7 +54,7 @@ final class ApiClient
 
         $this->delayNextRequestIfNecessary();
 
-        $responseBody = file_get_contents($url, false, stream_context_create([
+        $responseBody = @file_get_contents($url, false, stream_context_create([
             'http' => [
                 'method'        => $method,
                 'header'        => $headers,
@@ -62,6 +62,10 @@ final class ApiClient
                 'ignore_errors' => true,
             ],
         ]));
+
+        if (false === $responseBody) {
+            throw new \Exception(error_get_last());
+        }
 
         return $this->createResponse($responseBody, $http_response_header, $method);
     }

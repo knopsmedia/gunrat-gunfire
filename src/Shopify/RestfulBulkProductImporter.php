@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Gunratbe\Gunfire\Shopify;
+namespace Gunratbe\Shopify;
 
-use Gunratbe\Gunfire\Model\Product;
-use Gunratbe\Gunfire\Model\ProductImage;
-use Gunratbe\Gunfire\Repository\ProductRepository;
+use Gunratbe\App\Model\Product;
+use Gunratbe\App\Model\ProductImage;
+use Gunratbe\App\Repository\ProductRepository;
 
 final class RestfulBulkProductImporter implements BulkProductImporter
 {

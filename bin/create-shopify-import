@@ -5,6 +5,8 @@ ini_set('memory_limit', '512M');
 
 require __DIR__ . '/../vendor/autoload.php';
 
+(new \Symfony\Component\Dotenv\Dotenv())->loadEnv('.env');
+
 $opts = getopt('df:hs:', ['diagnostic', 'file:', 'help', 'since:']);
 
 if (isset($opts['h']) || isset($opts['help'])) {
@@ -13,17 +15,20 @@ if (isset($opts['h']) || isset($opts['help'])) {
     echo '  -d, --diagnostic      Runs the program and outputs diagnostic information.', PHP_EOL;
     echo '  -f, --file [filename] The filename to output.', PHP_EOL;
     echo '  -h, --help            Show this information.', PHP_EOL;
-    echo '  -s, --since [date]    Exports all updated products since {date}.', PHP_EOL;
+    echo '  -s, --since [date]    Exports all updated products since [date].', PHP_EOL;
+    echo '', PHP_EOL;
+    echo '  Create import from new product information:', PHP_EOL;
+    echo '    ./bin/create-shopify-import -s "$(cat .lastupdate)"', PHP_EOL;
     echo '', PHP_EOL;
     exit;
 }
 
-$factory = new \Gunratbe\Gunfire\Factory\DbalRepositoryFactory(getenv('GUNRAT_DB_URI'));
-$service = new \Gunratbe\Gunfire\Shopify\BulkProductImportCsvCreator($factory->getProductRepository());
+$factory = new \Gunratbe\App\Factory\DbalRepositoryFactory($_ENV['GUNRAT_DB_URI']);
+$service = new \Gunratbe\Shopify\BulkProductImportCsvCreator($factory->getProductRepository());
 
 if (isset($opts['s']) || isset($opts['since'])) {
     $since = $opts['s'] ?? $opts['since'];
-    $since = \Gunratbe\Gunfire\Factory\DateTimeFactory::createFromString($since);
+    $since = \Gunratbe\App\Factory\DateTimeFactory::createFromString($since);
 
     $service->setUpdatedProductsSince($since);
 }

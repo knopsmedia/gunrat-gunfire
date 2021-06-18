@@ -3,12 +3,14 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+(new \Symfony\Component\Dotenv\Dotenv())->loadEnv('.env');
+
 $stopwatch = new \Symfony\Component\Stopwatch\Stopwatch();
 $stopwatch->start('update');
 
 $service = new \Gunratbe\Gunfire\Service\UpdateProductInformation(
-    new \Gunratbe\Gunfire\Service\GunfireService(getenv('GUNFIRE_PRODUCTS_URL'), getenv('GUNFIRE_PRICES_URL')),
-    new \Gunratbe\Gunfire\Factory\DbalRepositoryFactory(getenv('GUNRAT_DB_URI'))
+    new \Gunratbe\Gunfire\Service\GunfireService($_ENV['GUNFIRE_PRODUCTS_URL'], $_ENV['GUNFIRE_PRICES_URL']),
+    new \Gunratbe\App\Factory\DbalRepositoryFactory($_ENV['GUNRAT_DB_URI'])
 );
 
 $service->update();

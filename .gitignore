@@ -2,7 +2,6 @@
 !bin/create-database
 !bin/create-shopify-import
 !bin/download-product-info
-!bin/envars
 !bin/update-product-info
 !bin/push-shopify-product-updates
 /build/*
@@ -10,5 +9,8 @@
 /data/*.sqlite3
 /data/gunfire-*
 /vendor/*
+.env
+.env.*
+!.env.dist
 .lastupdate
 shopify-import-*
