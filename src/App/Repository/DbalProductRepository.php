@@ -3,11 +3,11 @@
 namespace Gunratbe\App\Repository;
 
 use Doctrine\DBAL\Connection;
-use Gunratbe\App\Factory\DateTimeFactory;
-use Gunratbe\App\Model\Category;
-use Gunratbe\App\Model\Manufacturer;
-use Gunratbe\App\Model\Product;
-use Gunratbe\App\Model\ProductPrice;
+use Knops\Gunfire\Model\Category;
+use Knops\Gunfire\Model\Manufacturer;
+use Knops\Gunfire\Model\Product;
+use Knops\Gunfire\Model\ProductPrice;
+use Knops\Utilities\Factory\DateTimeFactory;
 
 final class DbalProductRepository extends AbstractDbalRepository implements ProductRepository
 {
@@ -171,10 +171,10 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
         $product->setPriceAmount((float)$data['price_amount']);
         $product->setPriceCurrency($data['price_currency']);
         $product->setStockQuantity((int)$data['stock_quantity']);
-        $product->setCreatedAt(DateTimeFactory::createFromFormat($data['created_at']));
+        $product->setCreatedAt(DateTimeFactory::createFromFormat('Y-m-d H:i:s', $data['created_at']));
 
         if ($data['updated_at']) {
-            $product->setUpdatedAt(DateTimeFactory::createFromFormat($data['updated_at']));
+            $product->setUpdatedAt(DateTimeFactory::createFromFormat('Y-m-d H:i:s', $data['updated_at']));
         }
     }
 

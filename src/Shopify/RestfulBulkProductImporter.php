@@ -2,9 +2,13 @@
 
 namespace Gunratbe\Shopify;
 
-use Gunratbe\App\Model\Product;
-use Gunratbe\App\Model\ProductImage;
+use Knops\Gunfire\Model\Product;
+use Knops\Gunfire\Model\ProductImage;
 use Gunratbe\App\Repository\ProductRepository;
+use Knops\Shopify\ApiClient;
+use Knops\Shopify\InventoryLevelApi;
+use Knops\Shopify\ProductApi;
+use Knops\Shopify\ProductVariantApi;
 
 final class RestfulBulkProductImporter implements BulkProductImporter
 {

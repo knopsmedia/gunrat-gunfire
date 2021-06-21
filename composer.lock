@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9bcd6cf65d1514c62d0de97db49db212",
+    "content-hash": "df8735fc05b957a43ea837d810b3cd83",
     "packages": [
         {
             "name": "cocur/slugify",
@@ -496,6 +496,127 @@
                 }
             ],
             "time": "2020-05-29T18:28:51+00:00"
+        },
+        {
+            "name": "knops/gunfire",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/knopsmedia/gunfire.git",
+                "reference": "15ff9a010d2511c3dc683868160d1118086268c3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/knopsmedia/gunfire/zipball/15ff9a010d2511c3dc683868160d1118086268c3",
+                "reference": "15ff9a010d2511c3dc683868160d1118086268c3",
+                "shasum": ""
+            },
+            "require": {
+                "knops/utilities": "^1.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "sabre/xml": "^2.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Knops\\Gunfire\\": "src"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Knops\\GunfireTests\\": "tests"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Client to parse Gunfire product XML.",
+            "support": {
+                "source": "https://github.com/knopsmedia/gunfire/tree/v1.0",
+                "issues": "https://github.com/knopsmedia/gunfire/issues"
+            },
+            "time": "2021-06-21T19:20:14+00:00"
+        },
+        {
+            "name": "knops/shopify-client",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/knopsmedia/shopify-client.git",
+                "reference": "6f653d47cac305b00871d8d13176f4daf76ffd3f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/knopsmedia/shopify-client/zipball/6f653d47cac305b00871d8d13176f4daf76ffd3f",
+                "reference": "6f653d47cac305b00871d8d13176f4daf76ffd3f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Knops\\Shopify\\": "src"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Knops\\ShopifyTests\\": "tests"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Shopify Client",
+            "support": {
+                "source": "https://github.com/knopsmedia/shopify-client/tree/v1.0",
+                "issues": "https://github.com/knopsmedia/shopify-client/issues"
+            },
+            "time": "2021-06-19T14:24:44+00:00"
+        },
+        {
+            "name": "knops/utilities",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/knopsmedia/utilities.git",
+                "reference": "c023f5f4eb0832b4250437de09abeb8a555203c4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/knopsmedia/utilities/zipball/c023f5f4eb0832b4250437de09abeb8a555203c4",
+                "reference": "c023f5f4eb0832b4250437de09abeb8a555203c4",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "cocur/slugify": "^4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Knops\\Utilities\\": "src"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Knops\\UtilitiesTests\\": "tests"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Little utilities to make life easier.",
+            "support": {
+                "source": "https://github.com/knopsmedia/utilities/tree/v1.0",
+                "issues": "https://github.com/knopsmedia/utilities/issues"
+            },
+            "time": "2021-06-19T15:15:04+00:00"
         },
         {
             "name": "league/csv",

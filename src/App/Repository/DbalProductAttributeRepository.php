@@ -3,8 +3,8 @@
 namespace Gunratbe\App\Repository;
 
 use Doctrine\DBAL\Connection;
-use Gunratbe\App\Model\Product;
-use Gunratbe\App\Model\ProductAttribute;
+use Knops\Gunfire\Model\Product;
+use Knops\Gunfire\Model\ProductAttribute;
 
 final class DbalProductAttributeRepository extends AbstractDbalRepository implements ProductAttributeRepository
 {

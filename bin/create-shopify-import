@@ -28,7 +28,7 @@ $service = new \Gunratbe\Shopify\BulkProductImportCsvCreator($factory->getProduc
 
 if (isset($opts['s']) || isset($opts['since'])) {
     $since = $opts['s'] ?? $opts['since'];
-    $since = \Gunratbe\App\Factory\DateTimeFactory::createFromString($since);
+    $since = \Knops\Utilities\Factory\DateTimeFactory::create($since);
 
     $service->setUpdatedProductsSince($since);
 }

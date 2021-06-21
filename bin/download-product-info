@@ -11,7 +11,7 @@ $stopwatch = new \Symfony\Component\Stopwatch\Stopwatch();
 $stopwatch->start('download');
 
 $service = new \Gunratbe\Gunfire\Service\DownloadProductInformation(
-    new \Gunratbe\Gunfire\Service\GunfireService($_ENV['GUNFIRE_PRODUCTS_URL'], $_ENV['GUNFIRE_PRICES_URL']),
+    new \Knops\Gunfire\GunfireService($_ENV['GUNFIRE_PRODUCTS_URL'], $_ENV['GUNFIRE_PRICES_URL']),
     new \Gunratbe\App\Factory\DbalRepositoryFactory($_ENV['GUNRAT_DB_URI'])
 );
 

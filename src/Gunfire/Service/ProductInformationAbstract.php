@@ -3,6 +3,7 @@
 namespace Gunratbe\Gunfire\Service;
 
 use Gunratbe\App\Factory\RepositoryFactory;
+use Knops\Gunfire\GunfireService;
 
 abstract class ProductInformationAbstract
 {
