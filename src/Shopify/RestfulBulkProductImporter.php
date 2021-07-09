@@ -35,9 +35,8 @@ final class RestfulBulkProductImporter implements BulkProductImporter
     {
         $offset = 0;
         $batchSize = 100;
-        $totalProducts = $this->productRepository->count();
 
-        $criteria = [];
+        $criteria = ['name_is_empty' => false];
 
         if ($cursor !== null) {
             $criteria['after_name'] = $cursor;
@@ -46,6 +45,8 @@ final class RestfulBulkProductImporter implements BulkProductImporter
         if ($this->updatedProductsSince !== null) {
             $criteria['updated_since'] = $this->updatedProductsSince->format('Y-m-d H:i:s');
         }
+
+        $totalProducts = $this->productRepository->countBy($criteria);
 
         while (true) {
             $products = $this->productRepository->findBy($criteria, $batchSize, $offset);

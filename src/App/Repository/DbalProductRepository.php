@@ -73,18 +73,23 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
         return $this->_hydrateAll($records);
     }
 
-    public function findBy(array $criteria, int $count, int $offset = 0, ?array $orderBy = null): array
+    public function countBy(array $criteria): int
+    {
+        return (int)$this->applyFilters($criteria)->select('count(*)')->fetchOne();
+    }
+
+    protected function applyFilters(array $criteria)
     {
         $qb = $this->getConnection()->createQueryBuilder()
             ->select('*')
-            ->from($this->getTableName())
-            ->where('name != :empty')->setParameter('empty', '')
-            ->orderBy('name')
-            ->setFirstResult($offset)
-            ->setMaxResults($count);
+            ->from($this->getTableName());
 
         foreach ($criteria as $field => $value) {
             switch ($field) {
+                case 'name_is_empty':
+                    $expr = $qb->expr();
+                    $qb->andWhere($expr->{$value ? 'eq' : 'neq'}('name', ':empty'))->setParameter('empty', '');
+                    break;
                 case 'after_name':
                     // cursor-based pagination
                     $qb->andWhere('name > :after_name')->orderBy('name')->setParameter('after_name', $value);
@@ -95,22 +100,22 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
             }
         }
 
-        if ($orderBy !== null) {
-            $first = true;
+        return $qb;
+    }
 
-            foreach ($orderBy as $field => $mode) {
-                if (is_int($field)) {
-                    $field = $mode;
-                    $mode = 'ASC';
-                }
+    public function findBy(array $criteria, int $count, int $offset = 0, array $orderBy = []): array
+    {
+        $qb = $this->applyFilters($criteria)
+            ->setFirstResult($offset)
+            ->setMaxResults($count);
 
-                if ($first) {
-                    $qb->orderBy($field, $mode);
-                    $first = false;
-                } else {
-                    $qb->addOrderBy($field, $mode);
-                }
+        foreach ($orderBy as $field => $mode) {
+            if (is_int($field)) {
+                $field = $mode;
+                $mode = 'ASC';
             }
+
+            $qb->addOrderBy($field, $mode);
         }
 
         $records = $qb->fetchAllAssociative();
