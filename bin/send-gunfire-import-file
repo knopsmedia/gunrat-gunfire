@@ -1,0 +1,36 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+(new \Symfony\Component\Dotenv\Dotenv())->loadEnv(
+    '.env'
+);
+
+// var_dump($_ENV);
+// exit;
+
+$smtpConfig = [
+    'host'       => $_ENV['SMTP_HOST'],
+    'port'       => (int)$_ENV['SMTP_PORT'],
+    'username'   => $_ENV['SMTP_USERNAME'],
+    'password'   => $_ENV['SMTP_PASSWORD'],
+    'clientHost' => 'knopsmedia.be',
+    'secure'     => 'ssl',
+];
+
+// var_dump($smtpConfig);
+// exit;
+
+$service = new \Gunratbe\Gunfire\Service\CreateSupplierBuyOrder(
+    new \Knops\ShopifyClient\ApiClient(
+        $_ENV['SHOPIFY_SHOP_URL'], $_ENV['SHOPIFY_API_ACCESS_TOKEN']
+    ),
+    new \Gunratbe\App\Repository\LocalJsonKeyValueRepository(
+        __DIR__ . '/../data/key-value.json'
+    ),
+    new \Nette\Mail\SmtpMailer($smtpConfig),
+    explode(',', $_ENV['RECIPIENTS'])
+);
+
+$service->create();

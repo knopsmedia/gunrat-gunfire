@@ -4,10 +4,12 @@
 !bin/download-product-info
 !bin/update-product-info
 !bin/push-shopify-product-updates
+!bin/send-gunfire-import-file
 /build/*
 !build/.gitignore
 /data/*.sqlite3
 /data/gunfire-*
+/data/*.json
 /vendor/*
 .env
 .env.*

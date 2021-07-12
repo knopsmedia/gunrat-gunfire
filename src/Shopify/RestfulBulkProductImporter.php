@@ -5,26 +5,16 @@ namespace Gunratbe\Shopify;
 use Knops\Gunfire\Model\Product;
 use Knops\Gunfire\Model\ProductImage;
 use Gunratbe\App\Repository\ProductRepository;
-use Knops\Shopify\ApiClient;
-use Knops\Shopify\InventoryLevelApi;
-use Knops\Shopify\ProductApi;
-use Knops\Shopify\ProductVariantApi;
+use Knops\ShopifyClient\ApiClient;
 
 final class RestfulBulkProductImporter implements BulkProductImporter
 {
-    private ProductRepository $productRepository;
-    private ProductApi $productApi;
-    private ProductVariantApi $variantApi;
-    private InventoryLevelApi $inventoryLevelApi;
     private ?\DateTimeInterface $updatedProductsSince = null;
 
-    public function __construct(ProductRepository $productRepository, ApiClient $shopifyApi)
-    {
-        $this->productRepository = $productRepository;
-        $this->productApi = $shopifyApi->products();
-        $this->variantApi = $shopifyApi->variants();
-        $this->inventoryLevelApi = $shopifyApi->inventoryLevels();
-    }
+    public function __construct(
+        private ProductRepository $productRepository,
+        private ApiClient $shopifyApi,
+    ) {}
 
     public function setUpdatedProductsSince(?\DateTimeInterface $updatedProductsSince): void
     {
@@ -66,7 +56,8 @@ final class RestfulBulkProductImporter implements BulkProductImporter
 
     protected function updateProduct(Product $product): void
     {
-        $apiProduct = $this->productApi->findOneByHandle($product->getHandle());
+        $productApi = $this->shopifyApi->products();
+        $apiProduct = $productApi->findOneByHandle($product->getHandle());
 
         $variantData = [
             'price'                => $product->getPriceAmount(),
@@ -80,7 +71,7 @@ final class RestfulBulkProductImporter implements BulkProductImporter
                 return ['src' => $image->getExternalUrl()];
             };
 
-            $this->productApi->create([
+            $productApi->create([
                 'handle'       => $product->getHandle(),
                 'title'        => $product->getName(),
                 'body_html'    => $product->getDescription(),
@@ -97,14 +88,14 @@ final class RestfulBulkProductImporter implements BulkProductImporter
 
         // no price -> draft
         if (!$product->getPriceAmount() && $apiProduct->status === 'active') {
-            $this->productApi->update($apiProduct->id, ['status' => 'draft']);
+            $productApi->update($apiProduct->id, ['status' => 'draft']);
 
             return;
         }
 
         // now has a price -> active
         if ($product->getPriceAmount() && $apiProduct->status !== 'active') {
-            $this->productApi->update($apiProduct->id, ['status' => 'active']);
+            $productApi->update($apiProduct->id, ['status' => 'active']);
         }
 
         $product->setShopifyExternalId($apiProduct->id);
@@ -114,14 +105,15 @@ final class RestfulBulkProductImporter implements BulkProductImporter
             || $apiVariant->weight != $product->getWeightInGrams()
             || $apiVariant->weight_unit !== 'g'
             || $apiVariant->inventory_management !== 'shopify') {
-            $this->variantApi->update($apiVariant->id, $variantData);
+            $this->shopifyApi->variants()->update($apiVariant->id, $variantData);
         }
 
         if ($apiVariant->inventory_quantity != $product->getStockQuantity()) {
-            $inventoryLevels = $this->inventoryLevelApi->getInventoryLevels([$apiVariant->inventory_item_id]);
+            $inventoryLevelApi = $this->shopifyApi->inventoryLevels();
+            $inventoryLevels = $inventoryLevelApi->getInventoryLevels([$apiVariant->inventory_item_id]);
             $inventoryLevel = $inventoryLevels[0];
 
-            $this->inventoryLevelApi->updateStock(
+            $inventoryLevelApi->updateStock(
                 $inventoryLevel->inventory_item_id,
                 $inventoryLevel->location_id,
                 $product->getStockQuantity()

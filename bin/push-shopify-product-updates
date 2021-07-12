@@ -24,8 +24,8 @@ if (isset($opts['h']) || isset($opts['help'])) {
 }
 
 $factory = new \Gunratbe\App\Factory\DbalRepositoryFactory($_ENV['GUNRAT_DB_URI']);
-$shopifyApi = new \Knops\Shopify\ApiClient(
-    $_ENV['SHOPIFY_SHOP_URL'], $_ENV['SHOPIFY_API_VERSION'], $_ENV['SHOPIFY_API_ACCESS_TOKEN']
+$shopifyApi = new \Knops\ShopifyClient\ApiClient(
+    $_ENV['SHOPIFY_SHOP_URL'], $_ENV['SHOPIFY_API_ACCESS_TOKEN']
 );
 
 $importer = new \Gunratbe\Shopify\RestfulBulkProductImporter($factory->getProductRepository(), $shopifyApi);
