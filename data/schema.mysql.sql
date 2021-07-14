@@ -17,7 +17,7 @@ CREATE TABLE products (
     price_currency CHAR(3),
     stock_quantity INTEGER UNSIGNED NOT NULL,
     created_at DATETIME NOT NULL,
-    updated_at DATETIME
+    updated_at TIMESTAMP NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 );
 
 CREATE TABLE product_images (

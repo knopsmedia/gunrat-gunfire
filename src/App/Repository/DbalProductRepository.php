@@ -244,7 +244,7 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
 
         // only add these if we dehydrate from database
         if ($product->getCreatedAt()) $data['created_at'] = $product->getCreatedAt();
-        if ($product->getUpdatedAt()) $data['updated_at'] = $product->getUpdatedAt();
+        // if ($product->getUpdatedAt()) $data['updated_at'] = $product->getUpdatedAt();
 
         return $data;
     }
@@ -273,7 +273,7 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
             'stock_quantity' => $price->getStockQuantity(),
             'price_amount'   => $price->getPriceAmount(),
             'price_currency' => $price->getPriceCurrency(),
-            'updated_at'     => DateTimeFactory::now(),
+            // 'updated_at'     => DateTimeFactory::now(),
         ];
 
         $this->getConnection()->update(
