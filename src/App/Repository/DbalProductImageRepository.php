@@ -3,8 +3,8 @@
 namespace Gunratbe\App\Repository;
 
 use Doctrine\DBAL\Connection;
-use Knops\Gunfire\Model\Product;
-use Knops\Gunfire\Model\ProductImage;
+use Knops\GunfireClient\Model\Product;
+use Knops\GunfireClient\Model\ProductImage;
 
 final class DbalProductImageRepository extends AbstractDbalRepository implements ProductImageRepository
 {

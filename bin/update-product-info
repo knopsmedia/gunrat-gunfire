@@ -9,7 +9,7 @@ $stopwatch = new \Symfony\Component\Stopwatch\Stopwatch();
 $stopwatch->start('update');
 
 $service = new \Gunratbe\Gunfire\Service\UpdateProductInformation(
-    new \Knops\Gunfire\GunfireService($_ENV['GUNFIRE_PRODUCTS_URL'], $_ENV['GUNFIRE_PRICES_URL']),
+    new \Knops\GunfireClient\GunfireService($_ENV['GUNFIRE_PRODUCTS_URL'], $_ENV['GUNFIRE_PRICES_URL']),
     new \Gunratbe\App\Factory\DbalRepositoryFactory($_ENV['GUNRAT_DB_URI'])
 );
 

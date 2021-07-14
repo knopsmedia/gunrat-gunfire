@@ -7,7 +7,7 @@ final class UpdateProductInformation extends ProductInformationAbstract
     public function update(): void
     {
         $this->getRepositoryFactory()
-            ->getProductRepository()
-            ->updatePrices($this->getGunfire()->getPrices());
+             ->getProductRepository()
+             ->updatePrices($this->getGunfire()->getPrices());
     }
 }

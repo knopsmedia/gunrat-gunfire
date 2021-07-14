@@ -3,8 +3,8 @@
 namespace Gunratbe\App\Repository;
 
 use Doctrine\DBAL\Connection;
-use Knops\Gunfire\Model\Product;
-use Knops\Gunfire\Model\ProductAttribute;
+use Knops\GunfireClient\Model\Product;
+use Knops\GunfireClient\Model\ProductAttribute;
 
 final class DbalProductAttributeRepository extends AbstractDbalRepository implements ProductAttributeRepository
 {
@@ -20,11 +20,11 @@ final class DbalProductAttributeRepository extends AbstractDbalRepository implem
     public function loadIntoProduct(Product $product): void
     {
         $records = $this->getConnection()->createQueryBuilder()
-            ->select('*')
-            ->from($this->getTableName())
-            ->where('product_external_id = :external_id')
-            ->setParameter('external_id', $product->getExternalId())
-            ->fetchAllAssociative();
+                        ->select('*')
+                        ->from($this->getTableName())
+                        ->where('product_external_id = :external_id')
+                        ->setParameter('external_id', $product->getExternalId())
+                        ->fetchAllAssociative();
 
         foreach ($records as $record) {
             $product->addAttribute(new ProductAttribute($record['name'], $record['value']));

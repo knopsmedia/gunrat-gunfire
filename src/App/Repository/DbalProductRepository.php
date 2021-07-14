@@ -3,10 +3,10 @@
 namespace Gunratbe\App\Repository;
 
 use Doctrine\DBAL\Connection;
-use Knops\Gunfire\Model\Category;
-use Knops\Gunfire\Model\Manufacturer;
-use Knops\Gunfire\Model\Product;
-use Knops\Gunfire\Model\ProductPrice;
+use Knops\GunfireClient\Model\Category;
+use Knops\GunfireClient\Model\Manufacturer;
+use Knops\GunfireClient\Model\Product;
+use Knops\GunfireClient\Model\ProductPrice;
 use Knops\Utilities\Factory\DateTimeFactory;
 
 final class DbalProductRepository extends AbstractDbalRepository implements ProductRepository

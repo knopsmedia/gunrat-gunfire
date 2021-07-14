@@ -2,8 +2,8 @@
 
 namespace Gunratbe\App\Repository;
 
-use Knops\Gunfire\Model\Product;
-use Knops\Gunfire\Model\ProductImage;
+use Knops\GunfireClient\Model\Product;
+use Knops\GunfireClient\Model\ProductImage;
 
 interface ProductImageRepository
 {

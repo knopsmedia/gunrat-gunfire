@@ -3,8 +3,8 @@
 namespace Gunratbe\App\Repository;
 
 use DateTimeInterface;
-use Knops\Gunfire\Model\Product;
-use Knops\Gunfire\Model\ProductPrice;
+use Knops\GunfireClient\Model\Product;
+use Knops\GunfireClient\Model\ProductPrice;
 
 interface ProductRepository
 {

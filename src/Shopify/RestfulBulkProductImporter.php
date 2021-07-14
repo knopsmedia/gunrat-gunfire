@@ -2,8 +2,8 @@
 
 namespace Gunratbe\Shopify;
 
-use Knops\Gunfire\Model\Product;
-use Knops\Gunfire\Model\ProductImage;
+use Knops\GunfireClient\Model\Product;
+use Knops\GunfireClient\Model\ProductImage;
 use Gunratbe\App\Repository\ProductRepository;
 use Knops\ShopifyClient\ApiClient;
 

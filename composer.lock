@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "57b01c2cb50b7eff7935a973441ea8a4",
+    "content-hash": "dbb3b6590bbc17307c95906acaa21ecc",
     "packages": [
         {
             "name": "cocur/slugify",
@@ -552,17 +552,17 @@
             "time": "2020-06-29T00:56:53+00:00"
         },
         {
-            "name": "knops/gunfire",
-            "version": "v1.0",
+            "name": "knops/gunfire-client",
+            "version": "v2.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/knopsmedia/gunfire.git",
-                "reference": "15ff9a010d2511c3dc683868160d1118086268c3"
+                "url": "https://github.com/knopsmedia/gunfire-client.git",
+                "reference": "b249cffaaa4682043c5f0ae36f26d839cc342897"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/knopsmedia/gunfire/zipball/15ff9a010d2511c3dc683868160d1118086268c3",
-                "reference": "15ff9a010d2511c3dc683868160d1118086268c3",
+                "url": "https://api.github.com/repos/knopsmedia/gunfire-client/zipball/b249cffaaa4682043c5f0ae36f26d839cc342897",
+                "reference": "b249cffaaa4682043c5f0ae36f26d839cc342897",
                 "shasum": ""
             },
             "require": {
@@ -575,12 +575,12 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Knops\\Gunfire\\": "src"
+                    "Knops\\GunfireClient\\": "src"
                 }
             },
             "autoload-dev": {
                 "psr-4": {
-                    "Knops\\GunfireTests\\": "tests"
+                    "Knops\\GunfireClientTests\\": "tests"
                 }
             },
             "license": [
@@ -588,10 +588,10 @@
             ],
             "description": "Client to parse Gunfire product XML.",
             "support": {
-                "source": "https://github.com/knopsmedia/gunfire/tree/v1.0",
-                "issues": "https://github.com/knopsmedia/gunfire/issues"
+                "source": "https://github.com/knopsmedia/gunfire-client/tree/v2.0",
+                "issues": "https://github.com/knopsmedia/gunfire-client/issues"
             },
-            "time": "2021-06-21T19:20:14+00:00"
+            "time": "2021-06-28T19:56:13+00:00"
         },
         {
             "name": "knops/shopify-client",

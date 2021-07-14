@@ -2,8 +2,8 @@
 
 namespace Gunratbe\App\Repository;
 
-use Knops\Gunfire\Model\Product;
-use Knops\Gunfire\Model\ProductAttribute;
+use Knops\GunfireClient\Model\Product;
+use Knops\GunfireClient\Model\ProductAttribute;
 
 interface ProductAttributeRepository
 {

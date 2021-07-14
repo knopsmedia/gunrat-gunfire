@@ -4,8 +4,8 @@ namespace Gunratbe\Shopify;
 
 use DateTimeInterface;
 use Gunratbe\App\Repository\ProductRepository;
-use Knops\Gunfire\Model\Product;
-use Knops\Gunfire\Model\ProductImage;
+use Knops\GunfireClient\Model\Product;
+use Knops\GunfireClient\Model\ProductImage;
 use League\Csv\Writer;
 
 /**
