@@ -6,6 +6,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $factory = new \Gunratbe\App\Factory\DbalRepositoryFactory($_ENV['GUNRAT_DB_URI']);
 $twig = new Twig\Environment(new Twig\Loader\FilesystemLoader(__DIR__ . '/../templates'));
+$twig->addExtension(new \Twig\Extra\Intl\IntlExtension());
 
 $twig->display('products/view.twig', [
     'product' => $factory->getProductRepository()->findByExternalId($_GET['id']),

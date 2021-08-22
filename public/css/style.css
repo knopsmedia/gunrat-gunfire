@@ -1,0 +1,23 @@
+body {
+    font-family: sans-serif;
+}
+
+table {
+    width: 100%;
+}
+
+table td, table th {
+    padding: 5px;
+}
+
+table tbody tr.out-of-stock {
+    background: lightgray;
+}
+
+ul.pagination {
+    list-style: none;
+}
+
+ul.pagination li {
+    display: inline;
+}

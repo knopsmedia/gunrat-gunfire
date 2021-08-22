@@ -104,6 +104,9 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
                     $expr = $qb->expr();
                     $qb->andWhere($expr->{$value ? 'eq' : 'neq'}('name', ':empty'))->setParameter('empty', '');
                     break;
+                case 'manufacturer':
+                    $qb->andWhere('manufacturer_name = :manufacturer')->setParameter('manufacturer', $value);
+                    break;
                 case 'after_name':
                     // cursor-based pagination
                     $qb->andWhere('name > :after_name')->orderBy('name')->setParameter('after_name', $value);

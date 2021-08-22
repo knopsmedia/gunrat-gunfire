@@ -6,6 +6,7 @@
     <table>
         <thead>
         <tr>
+            <th></th>
             <th>SKU</th>
             <th>Name</th>
             <th>Manufacturer</th>
@@ -18,13 +19,17 @@
         </thead>
         <tbody>
         {% for product in products %}
-            <tr>
+            <tr class="{% if product.stockQuantity == 0 %}out-of-stock{% endif %}">
                 <td><a href="/view.php?id={{ product.externalId }}&returnUrl={{ returnUrl }}">edit</a></td>
                 <td>{{ product.externalSku }}</td>
                 <td><a href="{{ product.externalListingUrl }}">{{ product.name }}</a></td>
                 <td>{{ product.manufacturer.name }}</td>
                 <td>{{ product.category.name }}</td>
-                <td>{{ product.priceAmount }}</td>
+                <td>
+                    {% if product.priceAmount %}
+                        {{ product.priceAmount|format_currency(product.priceCurrency) }}
+                    {% endif %}
+                </td>
                 <td>{{ product.stockQuantity }}</td>
                 <td>{{ product.createdAt|date }}</td>
                 <td>{{ product.updatedAt|date }}</td>
@@ -33,13 +38,13 @@
         </tbody>
     </table>
 
-    <ul>
+    <ul class="pagination">
     {% for pageNumber in 1..pageCount %}
         <li>
             {% if pageNumber == page %}
-                {{ page }}
+                {{ pageNumber }}
             {% else %}
-                <a href="?page={{ page }}">{{ page }}</a>
+                <a href="?page={{ pageNumber }}">{{ pageNumber }}</a>
             {% endif %}
         </li>
     {% endfor %}
