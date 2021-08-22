@@ -36,10 +36,10 @@ final class RestfulBulkProductImporter implements BulkProductImporter
             $criteria['updated_since'] = $this->updatedProductsSince->format('Y-m-d H:i:s');
         }
 
-        $totalProducts = $this->productRepository->countBy($criteria);
+        $totalProducts = $this->productRepository->countAllBy($criteria);
 
         while (true) {
-            $products = $this->productRepository->findBy($criteria, $batchSize, $offset);
+            $products = $this->productRepository->findAllBy($criteria, $batchSize, $offset);
 
             if (empty($products)) {
                 break; // reached the end!
@@ -54,12 +54,13 @@ final class RestfulBulkProductImporter implements BulkProductImporter
         }
     }
 
-    protected function updateProduct(Product $product): void
+    public function updateProduct(Product $product): void
     {
         $productApi = $this->shopifyApi->products();
         $apiProduct = $productApi->findOneByHandle($product->getHandle());
 
         $variantData = [
+            'sku'                  => $product->getExternalSku(),
             'price'                => $product->getPriceAmount(),
             'weight'               => $product->getWeightInGrams(),
             'weight_unit'          => 'g',
@@ -73,6 +74,7 @@ final class RestfulBulkProductImporter implements BulkProductImporter
 
             $productApi->create([
                 'handle'       => $product->getHandle(),
+                'sku'          => $product->getExternalSku(),
                 'title'        => $product->getName(),
                 'body_html'    => $product->getDescription(),
                 'product_type' => $product->getCategory()->getName(),
@@ -100,6 +102,14 @@ final class RestfulBulkProductImporter implements BulkProductImporter
 
         $product->setShopifyExternalId($apiProduct->id);
         $apiVariant = $apiProduct->variants[0];
+
+        // echo '<pre>';
+        // var_dump($apiProduct->variants[0]);
+        // exit;
+
+        if ($apiVariant->sku !== $product->getExternalSku()) {
+            $this->shopifyApi->variants()->update($apiVariant->id, ['sku' => $product->getExternalSku()]);
+        }
 
         if ($apiVariant->price != $product->getPriceAmount()
             || $apiVariant->weight != $product->getWeightInGrams()

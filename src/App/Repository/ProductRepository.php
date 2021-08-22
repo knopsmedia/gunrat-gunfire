@@ -10,7 +10,7 @@ interface ProductRepository
 {
     public function count(): int;
 
-    public function countBy(array $criteria): int;
+    public function countAllBy(array $criteria): int;
 
     /**
      * @return Product[]
@@ -24,7 +24,9 @@ interface ProductRepository
      */
     public function getPage(int $offset, int $count): array;
 
-    public function findBy(array $criteria, int $count, int $offset = 0, array $orderBy = []): array;
+    public function findByExternalId(int $externalId): ?Product;
+
+    public function findAllBy(array $criteria, int $count, int $offset = 0, array $orderBy = []): array;
 
     /**
      * @param DateTimeInterface $since

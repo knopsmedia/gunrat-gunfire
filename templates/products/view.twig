@@ -1,0 +1,11 @@
+{% extends 'layout.twig' %}
+
+{% block title product.name ~ ' | Gunrat' %}
+
+{% block content %}
+    <h1>{{ product.name }}</h1>
+
+    <a href="{{ returnUrl }}">&lt;&lt; Back to listing</a>
+
+    <a href="/push.php?id={{ product.externalId }}&returnUrl={{ returnUrl }}">Push updates to Shopify</a>
+{% endblock %}

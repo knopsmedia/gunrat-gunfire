@@ -73,7 +73,15 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
         return $this->_hydrateAll($records);
     }
 
-    public function countBy(array $criteria): int
+    public function findByExternalId(int $externalId): ?Product
+    {
+        $data = $this->applyFilters(['external_id' => $externalId])->fetchAssociative();
+        $data = $this->_hydrateAll([$data]);
+
+        return $data[0];
+    }
+
+    public function countAllBy(array $criteria): int
     {
         return (int)$this->applyFilters($criteria)->select('count(*)')->fetchOne();
     }
@@ -86,6 +94,12 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
 
         foreach ($criteria as $field => $value) {
             switch ($field) {
+                case 'external_id':
+                    $qb->andWhere('external_id = :external_id')->setParameter('external_id', $value);
+                    break;
+                case 'name':
+                    $qb->andWhere('name LIKE :name')->setParameter('name', $value);
+                    break;
                 case 'name_is_empty':
                     $expr = $qb->expr();
                     $qb->andWhere($expr->{$value ? 'eq' : 'neq'}('name', ':empty'))->setParameter('empty', '');
@@ -103,7 +117,7 @@ final class DbalProductRepository extends AbstractDbalRepository implements Prod
         return $qb;
     }
 
-    public function findBy(array $criteria, int $count, int $offset = 0, array $orderBy = []): array
+    public function findAllBy(array $criteria, int $count, int $offset = 0, array $orderBy = []): array
     {
         $qb = $this->applyFilters($criteria)
             ->setFirstResult($offset)
