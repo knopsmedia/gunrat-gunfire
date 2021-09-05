@@ -14,6 +14,7 @@ $itemsPerPage = 500;
 unset($_GET['page']);
 
 $criteria = array_replace(['name_is_empty' => false], $_GET);
+$criteria = array_filter($criteria, fn($value) => $value !== '');
 $totalProducts = $productRepository->countAllBy($criteria);
 $totalPages = ceil($totalProducts / $itemsPerPage);
 
