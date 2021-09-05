@@ -3,7 +3,7 @@
 {% block content %}
     <h1>{{ productCount }} producten</h1>
 
-    <form action="" method="get">
+    <form action="" method="get" enctype="application/x-www-form-urlencoded" autocomplete="off">
         <label>
             External ID
             <input type="text" name="external_id" id="external_id">
@@ -17,12 +17,13 @@
             Fabrikant
             <input type="text" name="manufacturer" id="manufacturer">
         </label>
+        <button type="submit">Zoeken</button>
     </form>
 
     <table>
         <thead>
         <tr>
-            <th></th>
+            <th style="width: 60px"></th>
             <th>SKU</th>
             <th>Name</th>
             <th>Manufacturer</th>
